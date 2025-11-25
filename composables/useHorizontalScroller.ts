@@ -5,12 +5,13 @@ interface HorizontalScrollerOptions {
   fallbackItemsThreshold?: number;
 }
 
-export const useHorizontalScroller = (
+export const useHorizontalScroller = <T>(
   gridRef: Ref<HTMLElement | null>,
-  items: Ref<unknown[] | undefined>,
+  items: Ref<readonly T[] | undefined>,
   options: HorizontalScrollerOptions = {},
 ) => {
   const { itemSelector = ".carousel-item", fallbackItemsThreshold = 3 } = options;
+  const isClient = typeof window !== "undefined";
 
   const canScrollPrev = ref(false);
   const canScrollNext = ref(false);
@@ -32,6 +33,7 @@ export const useHorizontalScroller = (
   };
 
   const scheduleUpdate = () => {
+    if (!isClient) return;
     if (frameId) cancelAnimationFrame(frameId);
     frameId = requestAnimationFrame(updateScrollState);
   };
@@ -47,6 +49,7 @@ export const useHorizontalScroller = (
   };
 
   const scrollNext = () => {
+    if (!isClient) return;
     const grid = gridRef.value;
     if (!grid) return;
     grid.scrollBy({ left: getScrollAmount(), behavior: "smooth" });
@@ -54,6 +57,7 @@ export const useHorizontalScroller = (
   };
 
   const scrollPrev = () => {
+    if (!isClient) return;
     const grid = gridRef.value;
     if (!grid) return;
     grid.scrollBy({ left: -getScrollAmount(), behavior: "smooth" });
@@ -61,6 +65,7 @@ export const useHorizontalScroller = (
   };
 
   onMounted(() => {
+    if (!isClient) return;
     const grid = gridRef.value;
     if (!grid) return;
 
@@ -76,6 +81,7 @@ export const useHorizontalScroller = (
   }, { deep: true });
 
   onBeforeUnmount(() => {
+    if (!isClient) return;
     const grid = gridRef.value;
     if (grid) grid.removeEventListener("scroll", scheduleUpdate);
     window.removeEventListener("resize", scheduleUpdate);

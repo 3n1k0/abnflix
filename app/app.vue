@@ -17,12 +17,12 @@ import AppHeader from "../components/AppHeader.vue";
 import HeroSection from "../components/HeroSection.vue";
 import ShowList from "../components/ShowList.vue";
 import { useHead } from "#imports";
-import { defaultShows } from "./data/shows";
 import "./assets/css/main.css";
+import { useShows } from "../composables/useShows";
 
 useHead({
   title: "TV Shows Dashboard",
 });
 
-const dramaShows = defaultShows;
+const { dramaShows } = useShows();
 </script>

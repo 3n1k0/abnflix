@@ -11,6 +11,12 @@
   --shadow-input-focus: 0 4px 12px -2px rgba(0, 0, 0, 0.12), 0 6px 14px -3px rgba(0, 0, 0, 0.08);
   --layout-max-width: 1216px;
   --layout-gap: 24px;
+  --text-heading-lg: 32px;
+  --text-base: 16px;
+  --text-sm: 14px;
+  --tracking-heading: -0.025em;
+  --tracking-base: -0.0195em;
+  --tracking-tight: -0.0107em;
   color: var(--color-ink);
   background-color: var(--color-bg);
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;

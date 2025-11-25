@@ -1,7 +1,7 @@
 <template>
   <article class="show-card">
     <div class="show-card__media">
-      <img :src="imageSrc" :alt="posterAlt" loading="lazy" />
+      <img :src="imageSrc" :alt="alt || `${title} poster`" loading="lazy" />
 
       <RatingBadge v-if="rating != null" class="show-card__rating" :value="rating" />
     </div>
@@ -11,8 +11,11 @@
   </article>
 </template>
 
+<script lang="ts">
+export default { name: "ShowCard" };
+</script>
+
 <script setup lang="ts">
-import { computed } from "vue";
 import RatingBadge from "./RatingBadge.vue";
 import type { RatingValue } from "../types/shows";
 
@@ -31,8 +34,6 @@ const props = withDefaults(
     year: undefined,
   },
 );
-
-const posterAlt = computed(() => props.alt || `${props.title} poster`);
 </script>
 
 <style scoped>
@@ -73,9 +74,9 @@ const posterAlt = computed(() => props.alt || `${props.title} poster`);
 .show-card__title {
   margin: 0;
   padding: 0 12px;
-  font-size: 16px;
+  font-size: var(--text-base);
   line-height: 1.5;
-  letter-spacing: -0.0195em;
+  letter-spacing: var(--tracking-base);
   font-weight: 400;
   color: var(--color-ink);
 }
@@ -83,9 +84,9 @@ const posterAlt = computed(() => props.alt || `${props.title} poster`);
 .show-card__meta {
   margin: 0;
   padding: 0 12px;
-  font-size: 14px;
+  font-size: var(--text-sm);
   line-height: 1.43;
-  letter-spacing: -0.0107em;
+  letter-spacing: var(--tracking-tight);
   color: #6a7282;
 }
 

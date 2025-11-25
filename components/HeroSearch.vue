@@ -11,14 +11,13 @@
       placeholder="Search for shows..."
       autocomplete="off"
       class="form-control"
-      :value="query"
-      @input="onInput"
+      v-model="queryModel"
     />
   </form>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 const props = withDefaults(
   defineProps<{
@@ -34,7 +33,7 @@ const emit = defineEmits<{
   (e: "search", value: string): void;
 }>();
 
-const query = ref(props.modelValue);
+const query = ref(props.modelValue ?? "");
 
 watch(
   () => props.modelValue,
@@ -43,11 +42,15 @@ watch(
   },
 );
 
-const onInput = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  query.value = target.value;
-  emit("update:modelValue", target.value);
+const updateQuery = (value: string) => {
+  query.value = value;
+  emit("update:modelValue", value);
 };
+
+const queryModel = computed({
+  get: () => query.value,
+  set: updateQuery,
+});
 
 const handleSubmit = () => {
   emit("search", query.value.trim());

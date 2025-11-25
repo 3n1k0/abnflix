@@ -1,9 +1,9 @@
 <template>
   <section class="show-list">
     <header class="show-list__header">
-      <h2 class="show-list__title">{{ title }}</h2>
+      <h2 class="show-list__title">{{ props.title }}</h2>
       <button type="button" class="show-list__action" @click="$emit('view-all')">
-        {{ actionLabel }}
+        {{ props.actionLabel }}
       </button>
     </header>
 
@@ -14,7 +14,8 @@
         :class="{ 'is-hidden': !canScrollPrev }"
         @click="scrollPrev"
         aria-label="Scroll shows backward"
-        :aria-hidden="!canScrollPrev"
+        :aria-disabled="!canScrollPrev"
+        :tabindex="canScrollPrev ? 0 : -1"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M15.41 7.41 10.83 12l4.58 4.59L15 18l-6-6 6-6z" fill="currentColor" />
@@ -23,7 +24,7 @@
 
       <div ref="gridRef" class="show-list__grid" role="list">
         <ShowCard
-          v-for="show in shows"
+          v-for="show in normalizedShows"
           :key="show.id ?? show.title"
           role="listitem"
           class="show-list__card"
@@ -41,7 +42,8 @@
         :class="{ 'is-hidden': !canScrollNext }"
         @click="scrollNext"
         aria-label="Scroll shows forward"
-        :aria-hidden="!canScrollNext"
+        :aria-disabled="!canScrollNext"
+        :tabindex="canScrollNext ? 0 : -1"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path
@@ -55,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs } from "vue";
+import { computed, ref } from "vue";
 import ShowCard from "./ShowCard.vue";
 import { useHorizontalScroller } from "../composables/useHorizontalScroller";
 import { defaultShows } from "../app/data/shows";
@@ -73,12 +75,12 @@ const props = withDefaults(defineProps<Props>(), {
   shows: () => defaultShows,
 });
 
-const { title, actionLabel, shows } = toRefs(props);
+const normalizedShows = computed(() => (props.shows ?? defaultShows).slice());
 
 defineEmits<{ (e: "view-all"): void }>();
 
 const gridRef = ref<HTMLElement | null>(null);
-const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalScroller(gridRef, shows, {
+const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalScroller(gridRef, normalizedShows, {
   itemSelector: ".show-list__card",
   fallbackItemsThreshold: 3,
 });
@@ -107,9 +109,9 @@ const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalSc
 
 .show-list__title {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--text-base);
   line-height: 1.5;
-  letter-spacing: -0.0195em;
+  letter-spacing: var(--tracking-base);
   font-weight: 400;
   color: var(--color-ink);
 }
@@ -119,9 +121,9 @@ const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalSc
   background: none;
   padding: 0;
   color: #e17100;
-  font-size: 14px;
+  font-size: var(--text-sm);
   line-height: 1.43;
-  letter-spacing: -0.0107em;
+  letter-spacing: var(--tracking-tight);
   cursor: pointer;
 }
 

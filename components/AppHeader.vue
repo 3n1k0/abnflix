@@ -69,6 +69,9 @@
 }
 
 .nav-link {
+  border: none;
+  background: none;
+  padding: 0;
   color: var(--color-muted);
   font-size: 16px;
   line-height: 1.5;

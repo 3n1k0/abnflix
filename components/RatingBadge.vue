@@ -10,6 +10,10 @@
   </div>
 </template>
 
+<script lang="ts">
+export default { name: "RatingBadge" };
+</script>
+
 <script setup lang="ts">
 import { computed } from "vue";
 import type { RatingValue } from "../types/shows";
@@ -42,9 +46,9 @@ const ariaLabel = computed(() => props.label || "User rating");
 
 .rating-badge__value {
   color: var(--color-ink);
-  font-size: 14px;
+  font-size: var(--text-sm);
   line-height: 1.43;
-  letter-spacing: -0.0107em;
+  letter-spacing: var(--tracking-tight);
 }
 
 .rating-badge__icon {
