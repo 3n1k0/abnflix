@@ -1,22 +1,14 @@
 <template>
   <div class="rating-badge" :aria-label="ariaLabel">
-    <svg class="rating-badge__icon" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 3.5l2.53 5.13 5.66.83-4.1 4 0.97 5.64L12 16.96 6.94 19.1 7.9 13.46 3.8 9.46l5.66-.83L12 3.5z"
-        fill="currentColor"
-      />
-    </svg>
+    <StarIcon class="rating-badge__icon" />
     <span class="rating-badge__value">{{ value }}</span>
   </div>
 </template>
 
-<script lang="ts">
-export default { name: "RatingBadge" };
-</script>
-
 <script setup lang="ts">
 import { computed } from "vue";
-import type { RatingValue } from "../types/shows";
+import StarIcon from "@@/components/icons/StarIcon.vue";
+import type { RatingValue } from "@@/types/shows";
 
 const props = withDefaults(
   defineProps<{
@@ -36,12 +28,12 @@ const ariaLabel = computed(() => props.label || "User rating");
   height: 32px;
   padding: 0 10px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  background: var(--color-bg-white-translucent);
+  box-shadow: var(--shadow-card);
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #fe9a00;
+  color: var(--color-rating);
 }
 
 .rating-badge__value {

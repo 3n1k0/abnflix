@@ -1,4 +1,4 @@
-import type { ShowItem } from "../types/shows";
+import type { ShowItem } from "@@/types/shows";
 
 export const defaultShows: ShowItem[] = [
   { id: 1, title: "Midnight Chronicles", year: "2023", rating: 8.7, imageSrc: "/images/show-list-1.png" },

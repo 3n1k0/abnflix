@@ -18,7 +18,7 @@
 
 <style scoped>
 .app-header {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-bg-white-translucent);
   border-bottom: 0.66px solid var(--color-border-soft);
   box-shadow: var(--shadow-soft);
 }
