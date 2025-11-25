@@ -1,6 +1,6 @@
 <template>
   <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-inner">
+    <div class="hero-inner container">
       <h1 id="hero-title" class="hero-title">Discover Your Next Favorite Show</h1>
       <p class="hero-copy">
         Explore thousands of TV shows across all genres. Find something new to watch tonight.
@@ -17,18 +17,16 @@ import HeroSearch from "./HeroSearch.vue";
 <style scoped>
 .hero {
   background: linear-gradient(135deg, #fffbea 0%, #fafaf9 50%, rgba(255, 251, 235, 0.3) 100%);
-  border-bottom: 0.66px solid rgba(254, 243, 198, 0.5);
+  border-bottom: 0.66px solid var(--color-border-soft);
 }
 
 .hero-inner {
-  max-width: 1216px;
-  margin: 0 auto;
-  padding: 72px 24px 80px;
+  padding: 72px 0 80px;
 }
 
 .hero-title {
   margin: 0;
-  color: #1e2939;
+  color: var(--color-ink);
   font-size: 16px;
   line-height: 1.5;
   font-weight: 400;
@@ -38,7 +36,7 @@ import HeroSearch from "./HeroSearch.vue";
 .hero-copy {
   margin: 24px 0 40px;
   max-width: 672px;
-  color: #4a5565;
+  color: var(--color-muted);
   font-size: 16px;
   line-height: 1.625;
   letter-spacing: -0.0195em;
@@ -46,7 +44,7 @@ import HeroSearch from "./HeroSearch.vue";
 
 @media (max-width: 640px) {
   .hero-inner {
-    padding: 56px 16px 64px;
+    padding: 56px 0 64px;
   }
 
   .hero-copy {

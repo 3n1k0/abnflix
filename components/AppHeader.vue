@@ -1,6 +1,6 @@
 <template>
   <header class="app-header">
-    <div class="header-inner">
+    <div class="header-inner container">
       <a class="brand" href="#" aria-label="TV Shows home">
         <span class="brand-icon" aria-hidden="true">
           <img src="/icons/tv-logo.svg" alt="" />
@@ -19,15 +19,12 @@
 <style scoped>
 .app-header {
   background: rgba(255, 255, 255, 0.95);
-  border-bottom: 0.66px solid rgba(254, 243, 198, 0.5);
-  box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border-bottom: 0.66px solid var(--color-border-soft);
+  box-shadow: var(--shadow-soft);
 }
 
 .header-inner {
   height: 64px;
-  max-width: 1216px;
-  margin: 0 auto;
-  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,7 +37,7 @@
   gap: 8px;
   height: 32px;
   text-decoration: none;
-  color: #1e2939;
+  color: var(--color-ink);
   font-size: 16px;
   line-height: 1.5;
   letter-spacing: -0.02em;
@@ -72,7 +69,7 @@
 }
 
 .nav-link {
-  color: #4a5565;
+  color: var(--color-muted);
   font-size: 16px;
   line-height: 1.5;
   letter-spacing: -0.02em;
@@ -82,13 +79,12 @@
 
 .nav-link:hover,
 .nav-link:focus-visible {
-  color: #1e2939;
+  color: var(--color-ink);
 }
 
 @media (max-width: 640px) {
   .header-inner {
     height: auto;
-    padding: 12px 16px;
     gap: 16px;
   }
 
