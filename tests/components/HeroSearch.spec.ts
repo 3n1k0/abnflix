@@ -20,4 +20,18 @@ describe("HeroSearch", () => {
     expect(input.attributes("placeholder")).toBe("Search for shows...");
     expect(input.attributes("autocomplete")).toBe("off");
   });
+
+  it("emits update and search events when used", async () => {
+    const wrapper = mount(HeroSearch, {
+      props: { modelValue: "Initial" },
+    });
+
+    const input = wrapper.get('input[type="search"]');
+    await input.setValue("New Query");
+
+    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual(["New Query"]);
+
+    await wrapper.get("form").trigger("submit.prevent");
+    expect(wrapper.emitted("search")?.[0]).toEqual(["New Query"]);
+  });
 });

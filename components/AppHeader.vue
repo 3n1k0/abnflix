@@ -3,7 +3,7 @@
     <div class="header-inner container">
       <a class="brand" href="#" aria-label="TV Shows home">
         <span class="brand-icon" aria-hidden="true">
-          <img src="/icons/tv-logo.svg" alt="" />
+          <img src="/icons/tv-logo.svg" alt="" aria-hidden="true" />
         </span>
         <span class="brand-label">TV Shows</span>
       </a>

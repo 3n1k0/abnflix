@@ -14,19 +14,23 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import RatingBadge from "./RatingBadge.vue";
+import type { RatingValue } from "../types/shows";
 
-interface Props {
-  title: string;
-  imageSrc?: string;
-  alt?: string;
-  rating?: number | string | null;
-  year?: number | string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  imageSrc: "/images/show-card.png",
-  rating: null,
-});
+const props = withDefaults(
+  defineProps<{
+    title: string;
+    imageSrc?: string;
+    alt?: string;
+    rating?: RatingValue | null;
+    year?: string | number;
+  }>(),
+  {
+    imageSrc: "/images/show-card.png",
+    alt: "",
+    rating: null,
+    year: undefined,
+  },
+);
 
 const posterAlt = computed(() => props.alt || `${props.title} poster`);
 </script>

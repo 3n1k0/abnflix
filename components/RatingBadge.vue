@@ -12,15 +12,17 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import type { RatingValue } from "../types/shows";
 
-interface Props {
-  value: string | number;
-  label?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  label: "User rating",
-});
+const props = withDefaults(
+  defineProps<{
+    value: RatingValue;
+    label?: string;
+  }>(),
+  {
+    label: "User rating",
+  },
+);
 
 const ariaLabel = computed(() => props.label || "User rating");
 </script>

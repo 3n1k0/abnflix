@@ -24,7 +24,7 @@
       <div ref="gridRef" class="show-list__grid" role="list">
         <ShowCard
           v-for="show in shows"
-          :key="show.title"
+          :key="show.id ?? show.title"
           role="listitem"
           class="show-list__card"
           :title="show.title"
@@ -55,15 +55,11 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref, toRefs } from "vue";
+import { ref, toRefs } from "vue";
 import ShowCard from "./ShowCard.vue";
-
-interface ShowItem {
-  title: string;
-  year?: string | number;
-  rating?: string | number | null;
-  imageSrc?: string;
-}
+import { useHorizontalScroller } from "../composables/useHorizontalScroller";
+import { defaultShows } from "../app/data/shows";
+import type { ShowItem } from "../types/shows";
 
 interface Props {
   title?: string;
@@ -74,16 +70,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   title: "Drama",
   actionLabel: "View All",
-  shows: () => [
-    { title: "Midnight Chronicles", year: "2023", rating: "8.7", imageSrc: "/images/show-list-1.png" },
-    { title: "City Lights", year: "2024", rating: "9.1", imageSrc: "/images/show-list-2.png" },
-    { title: "Cinematic Dreams", year: "2023", rating: "7.8", imageSrc: "/images/show-list-3.png" },
-    { title: "Starlight Academy", year: "2024", rating: "8.5", imageSrc: "/images/show-list-4.png" },
-    { title: "Wilderness Rescue", year: "2024", rating: "8.2", imageSrc: "/images/show-list-5.png" },
-    { title: "Cinematic Dreams", year: "2023", rating: "7.8", imageSrc: "/images/show-list-3.png" },
-    { title: "Starlight Academy", year: "2024", rating: "8.5", imageSrc: "/images/show-list-4.png" },
-    { title: "Wilderness Rescue", year: "2024", rating: "8.2", imageSrc: "/images/show-list-5.png" },
-  ],
+  shows: () => defaultShows,
 });
 
 const { title, actionLabel, shows } = toRefs(props);
@@ -91,68 +78,9 @@ const { title, actionLabel, shows } = toRefs(props);
 defineEmits<{ (e: "view-all"): void }>();
 
 const gridRef = ref<HTMLElement | null>(null);
-const canScrollPrev = ref(false);
-const canScrollNext = ref(false);
-
-const updateScrollState = () => {
-  const grid = gridRef.value;
-  if (!grid) return;
-
-  const { scrollLeft, scrollWidth, clientWidth } = grid;
-  const fallbackOverflow = (shows.value?.length || 0) > 3;
-  const overflow = scrollWidth - clientWidth > 4 || (scrollWidth === 0 && fallbackOverflow);
-
-  canScrollPrev.value = overflow && scrollLeft > 0;
-  const maxScrollLeft = Math.max(scrollWidth - clientWidth, 0);
-  const atEnd = scrollWidth === 0 ? false : scrollLeft >= maxScrollLeft - 1;
-  canScrollNext.value = overflow && !atEnd;
-};
-
-let frameId: number | null = null;
-const scheduleUpdate = () => {
-  if (frameId) cancelAnimationFrame(frameId);
-  frameId = requestAnimationFrame(updateScrollState);
-};
-
-const getScrollAmount = () => {
-  const grid = gridRef.value;
-  if (!grid) return 0;
-
-  const firstCard = grid.querySelector<HTMLElement>(".show-list__card");
-  const styles = getComputedStyle(grid);
-  const gap = parseFloat(styles.columnGap || styles.gap || "0");
-  return firstCard ? firstCard.getBoundingClientRect().width + gap : grid.clientWidth * 0.8;
-};
-
-const scrollNext = () => {
-  const grid = gridRef.value;
-  if (!grid) return;
-  grid.scrollBy({ left: getScrollAmount(), behavior: "smooth" });
-  scheduleUpdate();
-};
-
-const scrollPrev = () => {
-  const grid = gridRef.value;
-  if (!grid) return;
-  grid.scrollBy({ left: -getScrollAmount(), behavior: "smooth" });
-  scheduleUpdate();
-};
-
-onMounted(() => {
-  const grid = gridRef.value;
-  if (!grid) return;
-
-  updateScrollState();
-  grid.addEventListener("scroll", scheduleUpdate, { passive: true });
-  window.addEventListener("resize", scheduleUpdate);
-  nextTick(updateScrollState);
-});
-
-onBeforeUnmount(() => {
-  const grid = gridRef.value;
-  if (grid) grid.removeEventListener("scroll", scheduleUpdate);
-  window.removeEventListener("resize", scheduleUpdate);
-  if (frameId) cancelAnimationFrame(frameId);
+const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalScroller(gridRef, shows, {
+  itemSelector: ".show-list__card",
+  fallbackItemsThreshold: 3,
 });
 </script>
 

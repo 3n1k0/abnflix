@@ -16,21 +16,24 @@ import HeroSearch from "./HeroSearch.vue";
 
 <style scoped>
 .hero {
-  background: linear-gradient(135deg, #fffbea 0%, #fafaf9 50%, rgba(255, 251, 235, 0.3) 100%);
   border-bottom: 0.66px solid var(--color-border-soft);
 }
 
 .hero-inner {
   padding: 72px 0 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .hero-title {
   margin: 0;
   color: var(--color-ink);
-  font-size: 16px;
-  line-height: 1.5;
-  font-weight: 400;
-  letter-spacing: -0.0195em;
+  font-size: 32px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
 .hero-copy {
