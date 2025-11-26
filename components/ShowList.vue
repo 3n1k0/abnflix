@@ -17,9 +17,7 @@
         :aria-disabled="!canScrollPrev"
         :tabindex="canScrollPrev ? 0 : -1"
       >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M15.41 7.41 10.83 12l4.58 4.59L15 18l-6-6 6-6z" fill="currentColor" />
-        </svg>
+        <ChevronLeftIcon />
       </button>
 
       <div ref="gridRef" class="show-list__grid" role="list">
@@ -28,6 +26,7 @@
           :key="show.id ?? show.title"
           role="listitem"
           class="show-list__card"
+          :id="show.id"
           :title="show.title"
           :year="show.year"
           :rating="show.rating"
@@ -45,12 +44,7 @@
         :aria-disabled="!canScrollNext"
         :tabindex="canScrollNext ? 0 : -1"
       >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"
-            fill="currentColor"
-          />
-        </svg>
+        <ChevronRightIcon />
       </button>
     </div>
   </section>
@@ -59,6 +53,8 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import ShowCard from "./ShowCard.vue";
+import ChevronLeftIcon from "./icons/ChevronLeftIcon.vue";
+import ChevronRightIcon from "./icons/ChevronRightIcon.vue";
 import { useHorizontalScroller } from "../composables/useHorizontalScroller";
 import { defaultShows } from "../app/data/shows";
 import type { ShowItem } from "../types/shows";
@@ -77,7 +73,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const normalizedShows = computed(() => (props.shows ?? defaultShows).slice());
 
-defineEmits<{ (e: "view-all"): void }>();
+const emit = defineEmits<{
+  (e: "view-all"): void;
+}>();
 
 const gridRef = ref<HTMLElement | null>(null);
 const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalScroller(gridRef, normalizedShows, {
@@ -120,7 +118,7 @@ const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalSc
   border: none;
   background: none;
   padding: 0;
-  color: #e17100;
+  color: var(--color-primary);
   font-size: var(--text-sm);
   line-height: 1.43;
   letter-spacing: var(--tracking-tight);
@@ -135,7 +133,7 @@ const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalSc
 .show-list__grid {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 192px;
+  grid-auto-columns: var(--card-width);
   gap: 16px;
   overflow-x: auto;
   padding: 8px 0;
@@ -147,13 +145,13 @@ const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalSc
 }
 
 .show-list__scroll {
-  width: 52px;
-  height: 52px;
+  width: var(--scroll-button-size);
+  height: var(--scroll-button-size);
   border-radius: 50%;
   border: none;
-  background: #1e2939;
-  color: #fff;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  background: var(--color-scroll-button);
+  color: var(--color-bg-white);
+  box-shadow: var(--shadow-elevated);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -168,13 +166,13 @@ const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalSc
 }
 
 .show-list__scroll svg {
-  width: 24px;
-  height: 24px;
+  width: var(--icon-md);
+  height: var(--icon-md);
 }
 
 .show-list__scroll:hover,
 .show-list__scroll:focus-visible {
-  background: #111827;
+  background: var(--color-scroll-button-hover);
 }
 
 @media (max-width: 640px) {
@@ -184,8 +182,8 @@ const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalSc
   }
 
   .show-list__scroll {
-    width: 44px;
-    height: 44px;
+    width: var(--scroll-button-size-mobile);
+    height: var(--scroll-button-size-mobile);
   }
 }
 </style>

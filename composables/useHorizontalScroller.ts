@@ -5,6 +5,11 @@ interface HorizontalScrollerOptions {
   fallbackItemsThreshold?: number;
 }
 
+// Scroll behavior constants
+const SCROLL_OVERFLOW_THRESHOLD = 4; // Minimum pixel difference to consider content overflowing
+const SCROLL_END_TOLERANCE = 1; // Pixel tolerance for detecting scroll end position
+const FALLBACK_SCROLL_RATIO = 0.8; // Percentage of container width to scroll when item width is unknown
+
 export const useHorizontalScroller = <T>(
   gridRef: Ref<HTMLElement | null>,
   items: Ref<readonly T[] | undefined>,
@@ -24,11 +29,11 @@ export const useHorizontalScroller = <T>(
     const { scrollLeft, scrollWidth, clientWidth } = grid;
     const itemsLength = Array.isArray(items.value) ? items.value.length : 0;
     const fallbackOverflow = itemsLength > fallbackItemsThreshold;
-    const overflow = scrollWidth - clientWidth > 4 || (scrollWidth === 0 && fallbackOverflow);
+    const overflow = scrollWidth - clientWidth > SCROLL_OVERFLOW_THRESHOLD || (scrollWidth === 0 && fallbackOverflow);
 
     canScrollPrev.value = overflow && scrollLeft > 0;
     const maxScrollLeft = Math.max(scrollWidth - clientWidth, 0);
-    const atEnd = scrollWidth === 0 ? false : scrollLeft >= maxScrollLeft - 1;
+    const atEnd = scrollWidth === 0 ? false : scrollLeft >= maxScrollLeft - SCROLL_END_TOLERANCE;
     canScrollNext.value = overflow && !atEnd;
   };
 
@@ -45,7 +50,7 @@ export const useHorizontalScroller = <T>(
     const firstCard = grid.querySelector<HTMLElement>(itemSelector);
     const styles = getComputedStyle(grid);
     const gap = parseFloat(styles.columnGap || styles.gap || "0");
-    return firstCard ? firstCard.getBoundingClientRect().width + gap : grid.clientWidth * 0.8;
+    return firstCard ? firstCard.getBoundingClientRect().width + gap : grid.clientWidth * FALLBACK_SCROLL_RATIO;
   };
 
   const scrollNext = () => {

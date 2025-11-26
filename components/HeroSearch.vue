@@ -70,8 +70,8 @@ const handleSubmit = () => {
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -79,8 +79,8 @@ const handleSubmit = () => {
 }
 
 .hero-search__icon img {
-  width: 20px;
-  height: 20px;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
   display: block;
 }
 </style>

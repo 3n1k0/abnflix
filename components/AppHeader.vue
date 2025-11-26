@@ -38,23 +38,23 @@
   height: 32px;
   text-decoration: none;
   color: var(--color-ink);
-  font-size: 16px;
+  font-size: var(--text-base);
   line-height: 1.5;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-base);
   font-weight: 500;
 }
 
 .brand-icon {
-  width: 32px;
-  height: 32px;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .brand-icon img {
-  width: 32px;
-  height: 32px;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
   display: block;
 }
 
@@ -73,9 +73,9 @@
   background: none;
   padding: 0;
   color: var(--color-muted);
-  font-size: 16px;
+  font-size: var(--text-base);
   line-height: 1.5;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-base);
   text-decoration: none;
   transition: color 0.15s ease;
 }

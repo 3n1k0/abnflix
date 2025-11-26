@@ -1,19 +1,17 @@
 <template>
-  <article class="show-card">
-    <div class="show-card__media">
-      <img :src="imageSrc" :alt="alt || `${title} poster`" loading="lazy" />
+  <NuxtLink :to="`/shows/${id}`" class="show-card-link">
+    <article class="show-card">
+      <div class="show-card__media">
+        <img :src="imageSrc" :alt="alt || `${title} poster`" loading="lazy" />
 
-      <RatingBadge v-if="rating != null" class="show-card__rating" :value="rating" />
-    </div>
+        <RatingBadge v-if="rating != null" class="show-card__rating" :value="rating" />
+      </div>
 
-    <h3 class="show-card__title">{{ title }}</h3>
-    <p v-if="year" class="show-card__meta">{{ year }}</p>
-  </article>
+      <h3 class="show-card__title">{{ title }}</h3>
+      <p v-if="year" class="show-card__meta">{{ year }}</p>
+    </article>
+  </NuxtLink>
 </template>
-
-<script lang="ts">
-export default { name: "ShowCard" };
-</script>
 
 <script setup lang="ts">
 import RatingBadge from "./RatingBadge.vue";
@@ -21,6 +19,7 @@ import type { RatingValue } from "../types/shows";
 
 const props = withDefaults(
   defineProps<{
+    id: string | number;
     title: string;
     imageSrc?: string;
     alt?: string;
@@ -37,23 +36,39 @@ const props = withDefaults(
 </script>
 
 <style scoped>
+.show-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-fast);
+}
+
+.show-card-link:hover {
+  transform: translateY(-4px);
+}
+
+.show-card-link:hover .show-card {
+  box-shadow: var(--shadow-elevated);
+}
+
 .show-card {
-  width: 192px;
-  background: #fffbeb;
-  border-radius: 14px;
-  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  width: var(--card-width);
+  background: var(--color-bg-amber-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding-bottom: 12px;
   color: var(--color-ink);
+  transition: box-shadow var(--transition-fast);
 }
 
 .show-card__media {
   position: relative;
   width: 100%;
   aspect-ratio: 2 / 3;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   background: linear-gradient(135deg, rgba(255, 251, 235, 0.6), rgba(248, 250, 252, 0.6));
 }
@@ -87,7 +102,7 @@ const props = withDefaults(
   font-size: var(--text-sm);
   line-height: 1.43;
   letter-spacing: var(--tracking-tight);
-  color: #6a7282;
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 640px) {

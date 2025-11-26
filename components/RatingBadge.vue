@@ -7,12 +7,11 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import StarIcon from "@@/components/icons/StarIcon.vue";
-import type { RatingValue } from "@@/types/shows";
+import StarIcon from "./icons/StarIcon.vue";
 
 const props = withDefaults(
   defineProps<{
-    value: RatingValue;
+    value: number;
     label?: string;
   }>(),
   {
@@ -27,7 +26,7 @@ const ariaLabel = computed(() => props.label || "User rating");
 .rating-badge {
   height: 32px;
   padding: 0 10px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   background: var(--color-bg-white-translucent);
   box-shadow: var(--shadow-card);
   display: inline-flex;
@@ -44,8 +43,8 @@ const ariaLabel = computed(() => props.label || "User rating");
 }
 
 .rating-badge__icon {
-  width: 14px;
-  height: 14px;
+  width: var(--icon-xs);
+  height: var(--icon-xs);
   flex-shrink: 0;
 }
 </style>

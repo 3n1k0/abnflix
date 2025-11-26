@@ -4,12 +4,25 @@ import RatingBadge from "@/components/RatingBadge.vue";
 import ShowCard from "@/components/ShowCard.vue";
 
 describe("ShowCard", () => {
+  const mountOptions = {
+    global: {
+      stubs: {
+        NuxtLink: {
+          template: '<a :to="to"><slot /></a>',
+          props: ['to'],
+        },
+      },
+    },
+  };
+
   it("renders title, year, and rating", () => {
     const wrapper = mount(ShowCard, {
+      ...mountOptions,
       props: {
+        id: 1,
         title: "Midnight Chronicles",
         year: "2023",
-        rating: "8.7",
+        rating: 8.7,
       },
     });
 
@@ -21,7 +34,9 @@ describe("ShowCard", () => {
 
   it("uses poster alt text derived from the title when none is provided", () => {
     const wrapper = mount(ShowCard, {
+      ...mountOptions,
       props: {
+        id: 2,
         title: "Nebula Drift",
       },
     });
@@ -33,7 +48,9 @@ describe("ShowCard", () => {
 
   it("hides the rating badge when no rating is supplied", () => {
     const wrapper = mount(ShowCard, {
+      ...mountOptions,
       props: {
+        id: 3,
         title: "Signal Lost",
         rating: null,
       },

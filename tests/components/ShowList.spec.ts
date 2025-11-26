@@ -4,8 +4,18 @@ import ShowCard from "@/components/ShowCard.vue";
 import ShowList from "@/components/ShowList.vue";
 
 describe("ShowList", () => {
+  const mountOptions = {
+    global: {
+      stubs: {
+        NuxtLink: {
+          template: '<a :to="to"><slot /></a>',
+          props: ['to'],
+        },
+      },
+    },
+  };
   it("renders the section title, action label, and default shows", () => {
-    const wrapper = mount(ShowList);
+    const wrapper = mount(ShowList, mountOptions);
 
     expect(wrapper.get(".show-list__title").text()).toBe("Drama");
     expect(wrapper.get(".show-list__action").text()).toBe("View All");
@@ -15,7 +25,7 @@ describe("ShowList", () => {
   });
 
   it("emits a view-all event when the action is clicked", async () => {
-    const wrapper = mount(ShowList);
+    const wrapper = mount(ShowList, mountOptions);
 
     await wrapper.get(".show-list__action").trigger("click");
     expect(wrapper.emitted("view-all")).toBeTruthy();
@@ -23,11 +33,12 @@ describe("ShowList", () => {
 
   it("renders provided shows and title", () => {
     const shows = [
-      { title: "Custom One", year: "2020", rating: "7.0", imageSrc: "/foo.png" },
-      { title: "Custom Two", year: "2021", rating: "8.0", imageSrc: "/bar.png" },
+      { id: 1, title: "Custom One", year: "2020", rating: 7.0, imageSrc: "/foo.png" },
+      { id: 2, title: "Custom Two", year: "2021", rating: 8.0, imageSrc: "/bar.png" },
     ];
 
     const wrapper = mount(ShowList, {
+      ...mountOptions,
       props: {
         title: "Comedy",
         actionLabel: "See more",
@@ -45,7 +56,7 @@ describe("ShowList", () => {
   });
 
   it("scrolls the grid when the arrow button is clicked", async () => {
-    const wrapper = mount(ShowList);
+    const wrapper = mount(ShowList, mountOptions);
 
     const grid = wrapper.get(".show-list__grid").element as HTMLElement;
     const scrollBy = vi.fn();
