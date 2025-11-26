@@ -18,8 +18,12 @@ export const useHorizontalScroller = <T>(
   const { itemSelector = ".carousel-item", fallbackItemsThreshold = 3 } = options;
   const isClient = typeof window !== "undefined";
 
+  // Initialize based on item count for SSR consistency
+  const itemsLength = Array.isArray(items.value) ? items.value.length : 0;
+  const hasEnoughItems = itemsLength > fallbackItemsThreshold;
+
   const canScrollPrev = ref(false);
-  const canScrollNext = ref(false);
+  const canScrollNext = ref(hasEnoughItems); // Start with true if enough items
   let frameId: number | null = null;
 
   const updateScrollState = () => {

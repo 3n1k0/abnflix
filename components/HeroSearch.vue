@@ -2,7 +2,7 @@
   <form class="hero-search" role="search" aria-label="Search for shows" @submit.prevent="handleSubmit">
     <label class="sr-only" for="hero-search-input">Search for shows</label>
     <span class="hero-search__icon" aria-hidden="true">
-      <img src="/icons/search-icon.svg" alt="" aria-hidden="true" />
+      <img src="/icons/search-icon.svg" alt="" aria-hidden="true" width="20" height="20" />
     </span>
     <input
       id="hero-search-input"

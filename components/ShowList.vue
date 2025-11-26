@@ -22,7 +22,7 @@
 
       <div ref="gridRef" class="show-list__grid" role="list">
         <ShowCard
-          v-for="show in normalizedShows"
+          v-for="(show, index) in normalizedShows"
           :key="show.id ?? show.title"
           role="listitem"
           class="show-list__card"
@@ -32,6 +32,7 @@
           :rating="show.rating"
           :image-src="show.imageSrc"
           :alt="`${show.title} poster`"
+          :eager-load="index < props.eagerLoadCount"
         />
       </div>
 
@@ -63,12 +64,14 @@ interface Props {
   title?: string;
   actionLabel?: string;
   shows?: ShowItem[];
+  eagerLoadCount?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   title: "Drama",
   actionLabel: "View All",
   shows: () => defaultShows,
+  eagerLoadCount: 0,
 });
 
 const normalizedShows = computed(() => (props.shows ?? defaultShows).slice());

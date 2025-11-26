@@ -2,7 +2,7 @@
   <footer class="app-footer">
     <div class="footer-inner container">
       <div class="footer-brand">
-        <img class="footer-logo" src="/icons/footer-logo.svg" alt="" aria-hidden="true" />
+        <img class="footer-logo" src="/icons/footer-logo.svg" alt="" aria-hidden="true" width="24" height="24" />
         <span class="footer-copy">© 2025 TV Shows Dashboard</span>
       </div>
 

@@ -2,7 +2,14 @@
   <NuxtLink :to="`/shows/${id}`" class="show-card-link">
     <article class="show-card">
       <div class="show-card__media">
-        <img :src="imageSrc" :alt="alt || `${title} poster`" loading="lazy" />
+        <img
+          :src="imageSrc"
+          :alt="alt || `${title} poster`"
+          :loading="eagerLoad ? 'eager' : 'lazy'"
+          width="192"
+          height="288"
+          decoding="async"
+        />
 
         <RatingBadge v-if="rating != null" class="show-card__rating" :value="rating" />
       </div>
@@ -25,12 +32,14 @@ const props = withDefaults(
     alt?: string;
     rating?: RatingValue | null;
     year?: string | number;
+    eagerLoad?: boolean;
   }>(),
   {
     imageSrc: "/images/show-card.png",
     alt: "",
     rating: null,
     year: undefined,
+    eagerLoad: false,
   },
 );
 </script>
