@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="`/shows/${id}`" class="show-card-link">
+  <NuxtLink :to="`/shows/${slug || id}`" class="show-card-link">
     <article class="show-card">
       <div class="show-card__media">
         <img
@@ -27,6 +27,7 @@ import type { RatingValue } from "../types/shows";
 const props = withDefaults(
   defineProps<{
     id: string | number;
+    slug?: string;
     title: string;
     imageSrc?: string;
     alt?: string;
@@ -35,6 +36,7 @@ const props = withDefaults(
     eagerLoad?: boolean;
   }>(),
   {
+    slug: undefined,
     imageSrc: "/images/show-card.png",
     alt: "",
     rating: null,

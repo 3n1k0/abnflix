@@ -27,6 +27,7 @@
           role="listitem"
           class="show-list__card"
           :id="show.id"
+          :slug="show.slug"
           :title="show.title"
           :year="show.year"
           :rating="show.rating"

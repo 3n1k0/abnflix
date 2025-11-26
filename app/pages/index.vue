@@ -24,10 +24,10 @@
   </main>
 </template>
 
-<script setup>
-import { useHead } from "#imports";
+<script setup lang="ts">
 import HeroSection from "../../components/HeroSection.vue";
 import ShowList from "../../components/ShowList.vue";
+import { useHead } from "#imports";
 import { useShows } from "../../composables/useShows";
 
 useHead({

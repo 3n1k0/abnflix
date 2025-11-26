@@ -2,6 +2,7 @@ export type RatingValue = number | string;
 
 export interface ShowItem {
   id?: string | number;
+  slug?: string;
   title: string;
   year?: string | number;
   rating?: RatingValue | null;

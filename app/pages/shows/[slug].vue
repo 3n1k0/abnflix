@@ -1,3 +1,4 @@
+
 <template>
   <main role="main" class="show-detail">
     <div class="container">
@@ -44,10 +45,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useHead } from "#imports";
 import ChevronLeftIcon from "../../components/icons/ChevronLeftIcon.vue";
 import RatingBadge from "../../components/RatingBadge.vue";
-import { useShows } from "../../composables/useShows";
+import { useHead } from "nuxt/app";
+import { useShows } from "../../../composables/useShows";
 
 const route = useRoute();
 const router = useRouter();
@@ -62,10 +63,10 @@ const allShows = computed(() => [
   ...musical.value,
 ]);
 
-// Find the show by ID
+// Find the show by slug
 const show = computed(() => {
-  const id = route.params.id;
-  return allShows.value.find((s) => String(s.id) === String(id));
+  const slug = route.params.slug;
+  return allShows.value.find((s) => s.slug === slug);
 });
 
 useHead({
