@@ -72,7 +72,7 @@ const props = defineProps({
   },
 });
 
-const normalizedShows = computed(() => (props.shows ?? defaultShows).slice());
+const normalizedShows = computed(() => props.shows?.slice() || []);
 
 const gridRef = ref(null);
 const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalScroller(gridRef, normalizedShows, {

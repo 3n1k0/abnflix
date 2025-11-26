@@ -15,6 +15,7 @@ export interface TvMazeShow {
   id: number;
   url?: string;
   name: string;
+  genres?: string[];
   premiered?: string | null;
   rating?: {
     average?: number | null;

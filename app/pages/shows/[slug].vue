@@ -46,14 +46,13 @@
 
 const route = useRoute();
 const router = useRouter();
-const { dramaShows, comedy, horror, thriller, musical } = useShows();
+const { dramaShows, comedy, horror, thriller } = useShows();
 
 const allShows = computed(() => [
   ...dramaShows.value,
   ...comedy.value,
   ...horror.value,
-  ...thriller.value,
-  ...musical.value,
+  ...thriller.value
 ]);
 
 const show = computed(() => {

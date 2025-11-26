@@ -3,6 +3,7 @@
 import { defineNuxtConfig } from "nuxt/config";
 
 export default defineNuxtConfig({
+  css: ["~/assets/css/main.css"],
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   srcDir: "app/",
@@ -12,6 +13,17 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
+  features: {
+    inlineStyles: false, // Disable inline styles for proper SSR CSS handling
+  },
+  vite: {
+    css: {
+      devSourcemap: true,
+    },
+  },
+  nitro: {
+    compressPublicAssets: true,
+  },
   typescript: {
     tsConfig: {
       include: [

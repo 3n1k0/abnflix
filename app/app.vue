@@ -7,5 +7,5 @@
 </template>
 
 <script setup>
-import "./assets/css/main.css";
+// CSS is imported via nuxt.config.ts
 </script>

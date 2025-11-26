@@ -17,10 +17,6 @@
     <section class="container genre-section" aria-label="Genre: Thriller">
       <ShowList title="Thriller" action-label="View All" :shows="thriller" />
     </section>
-
-    <section class="container genre-section" aria-label="Genre: Musical">
-      <ShowList title="Musical" action-label="View All" :shows="musical" />
-    </section>
   </main>
 </template>
 
@@ -28,8 +24,7 @@
 useHead({
   title: "TV Shows Dashboard",
 });
-
-const { dramaShows, comedy, horror, thriller, musical } = useShows();
+const { dramaShows, comedy, horror, thriller, romantic } = useShows();
 </script>
 
 <style scoped>
