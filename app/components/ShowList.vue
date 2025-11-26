@@ -1,9 +1,9 @@
 <template>
   <section class="show-list">
     <header class="show-list__header">
-      <h2 class="show-list__title">{{ props.title }}</h2>
+      <h2 class="show-list__title">{{ title }}</h2>
       <button type="button" class="show-list__action" @click="$emit('view-all')">
-        {{ props.actionLabel }}
+        {{ actionLabel }}
       </button>
     </header>
 
@@ -33,7 +33,7 @@
           :rating="show.rating"
           :image-src="show.imageSrc"
           :alt="`${show.title} poster`"
-          :eager-load="index < props.eagerLoadCount"
+          :eager-load="index < eagerLoadCount"
         />
       </div>
 
@@ -52,36 +52,29 @@
   </section>
 </template>
 
-<script setup lang="ts">
-import { computed, ref } from "vue";
-import ShowCard from "./ShowCard.vue";
-import ChevronLeftIcon from "./icons/ChevronLeftIcon.vue";
-import ChevronRightIcon from "./icons/ChevronRightIcon.vue";
-import { useHorizontalScroller } from "../composables/useHorizontalScroller";
-import { defaultShows } from "../app/data/shows";
-import type { ShowItem } from "../types/shows";
-
-interface Props {
-  title?: string;
-  actionLabel?: string;
-  shows?: ShowItem[];
-  eagerLoadCount?: number;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  title: "Drama",
-  actionLabel: "View All",
-  shows: () => defaultShows,
-  eagerLoadCount: 0,
+<script setup>
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  actionLabel: {
+    type: String,
+    required: true,
+  },
+  shows: {
+    type: Array,
+    default: undefined,
+  },
+  eagerLoadCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const normalizedShows = computed(() => (props.shows ?? defaultShows).slice());
 
-const emit = defineEmits<{
-  (e: "view-all"): void;
-}>();
-
-const gridRef = ref<HTMLElement | null>(null);
+const gridRef = ref(null);
 const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalScroller(gridRef, normalizedShows, {
   itemSelector: ".show-list__card",
   fallbackItemsThreshold: 3,

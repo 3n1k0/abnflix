@@ -5,20 +5,19 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed } from "vue";
+<script setup>
 import StarIcon from "./icons/StarIcon.vue";
 
-const props = withDefaults(
-  defineProps<{
-    value: number;
-    label?: string;
-  }>(),
-  {
-    label: "User rating",
+const props = defineProps({
+  value: {
+    type: [Number, String],
+    required: true,
   },
-);
-
+  label: {
+    type: String,
+    default: "",
+  },
+});
 const ariaLabel = computed(() => props.label || "User rating");
 </script>
 

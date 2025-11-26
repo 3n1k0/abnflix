@@ -11,7 +11,6 @@
 </template>
 
 <script setup>
-import HeroSearch from "./HeroSearch.vue";
 </script>
 
 <style scoped>

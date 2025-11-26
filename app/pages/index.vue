@@ -24,12 +24,7 @@
   </main>
 </template>
 
-<script setup lang="ts">
-import HeroSection from "../../components/HeroSection.vue";
-import ShowList from "../../components/ShowList.vue";
-import { useHead } from "#imports";
-import { useShows } from "../../composables/useShows";
-
+<script setup>
 useHead({
   title: "TV Shows Dashboard",
 });

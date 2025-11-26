@@ -1,6 +1,12 @@
 import { computed } from "vue";
-import { defaultShows, comedyShows, horrorShows, thrillerShows, musicalShows } from "../app/data/shows";
-import type { ShowItem } from "../types/shows";
+import {
+  defaultShows,
+  comedyShows,
+  horrorShows,
+  thrillerShows,
+  musicalShows,
+} from "../data/shows";
+import type { ShowItem } from "../../types/shows";
 
 export const useShows = () => {
   const dramaShows = computed<ShowItem[]>(() => defaultShows.slice());

@@ -16,22 +16,15 @@
   </form>
 </template>
 
-<script setup lang="ts">
-import { computed, ref, watch } from "vue";
-
-const props = withDefaults(
-  defineProps<{
-    modelValue?: string;
-  }>(),
-  {
-    modelValue: "",
+<script setup>
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: "",
   },
-);
+});
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: string): void;
-  (e: "search", value: string): void;
-}>();
+const emit = defineEmits(["update:modelValue", "search"]);
 
 const query = ref(props.modelValue ?? "");
 
@@ -42,7 +35,7 @@ watch(
   },
 );
 
-const updateQuery = (value: string) => {
+const updateQuery = (value) => {
   query.value = value;
   emit("update:modelValue", value);
 };

@@ -20,30 +20,41 @@
   </NuxtLink>
 </template>
 
-<script setup lang="ts">
-import RatingBadge from "./RatingBadge.vue";
-import type { RatingValue } from "../types/shows";
-
-const props = withDefaults(
-  defineProps<{
-    id: string | number;
-    slug?: string;
-    title: string;
-    imageSrc?: string;
-    alt?: string;
-    rating?: RatingValue | null;
-    year?: string | number;
-    eagerLoad?: boolean;
-  }>(),
-  {
-    slug: undefined,
-    imageSrc: "/images/show-card.png",
-    alt: "",
-    rating: null,
-    year: undefined,
-    eagerLoad: false,
+<script setup>
+defineProps({
+  id: {
+    type: [String, Number],
+    required: true,
   },
-);
+  slug: {
+    type: String,
+    default: undefined,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  imageSrc: {
+    type: String,
+    default: "/images/show-card.png",
+  },
+  alt: {
+    type: String,
+    default: "",
+  },
+  rating: {
+    type: [Number, String],
+    default: null,
+  },
+  year: {
+    type: [String, Number],
+    default: undefined,
+  },
+  eagerLoad: {
+    type: Boolean,
+    default: false,
+  },
+});
 </script>
 
 <style scoped>
