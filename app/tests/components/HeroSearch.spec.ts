@@ -2,9 +2,19 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import HeroSearch from '@/components/HeroSearch.vue'
 
+const mountSearch = (props?: Record<string, unknown>) =>
+  mount(HeroSearch, {
+    props,
+    global: {
+      stubs: {
+        SearchIcon: true,
+      },
+    },
+  })
+
 describe('HeroSearch', () => {
   it('renders the search form with accessibility attributes', () => {
-    const wrapper = mount(HeroSearch)
+    const wrapper = mountSearch()
 
     const form = wrapper.get('form')
     expect(form.attributes('role')).toBe('search')
@@ -12,7 +22,7 @@ describe('HeroSearch', () => {
   })
 
   it('displays a search input configured for show queries', () => {
-    const wrapper = mount(HeroSearch)
+    const wrapper = mountSearch()
 
     const input = wrapper.get('input[type="search"]')
     expect(input.attributes('id')).toBe('hero-search-input')
@@ -22,9 +32,7 @@ describe('HeroSearch', () => {
   })
 
   it('emits update and search events when used', async () => {
-    const wrapper = mount(HeroSearch, {
-      props: { modelValue: 'Initial' },
-    })
+    const wrapper = mountSearch({ modelValue: 'Initial' })
 
     const input = wrapper.get('input[type="search"]')
     await input.setValue('New Query')

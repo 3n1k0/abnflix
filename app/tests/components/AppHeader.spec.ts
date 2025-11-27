@@ -2,9 +2,18 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import AppHeader from '~/components/AppHeader.vue'
 
+const mountHeader = () =>
+  mount(AppHeader, {
+    global: {
+      stubs: {
+        TvLogoIcon: true,
+      },
+    },
+  })
+
 describe('AppHeader', () => {
   it('renders the brand link with accessible label', () => {
-    const wrapper = mount(AppHeader)
+    const wrapper = mountHeader()
 
     const brandLink = wrapper.get('a.brand')
     expect(brandLink.text()).toContain('TV Shows')
@@ -13,7 +22,7 @@ describe('AppHeader', () => {
   })
 
   it('shows primary navigation items', () => {
-    const wrapper = mount(AppHeader)
+    const wrapper = mountHeader()
 
     const nav = wrapper.get('nav')
     expect(nav.attributes('aria-label')).toBe('Primary')

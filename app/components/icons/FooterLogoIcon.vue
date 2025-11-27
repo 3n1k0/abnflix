@@ -19,7 +19,14 @@
       stroke-linejoin="round"
     />
     <defs>
-      <linearGradient id="paint0_linear_1_282" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="paint0_linear_1_282"
+        x1="0"
+        y1="0"
+        x2="24"
+        y2="24"
+        gradientUnits="userSpaceOnUse"
+      >
         <stop stop-color="#FE9A00" />
         <stop offset="1" stop-color="#E17100" />
       </linearGradient>

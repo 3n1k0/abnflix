@@ -6,8 +6,18 @@ const MAX_GENRES = 4
 
 function sortByRating(shows: ShowItem[]): ShowItem[] {
   return [...shows].sort((a, b) => {
-    const ratingA = a.rating ?? -1
-    const ratingB = b.rating ?? -1
+    const ratingA =
+      typeof a.rating === 'number'
+        ? a.rating
+        : typeof a.rating === 'string'
+          ? parseFloat(a.rating)
+          : -1
+    const ratingB =
+      typeof b.rating === 'number'
+        ? b.rating
+        : typeof b.rating === 'string'
+          ? parseFloat(b.rating)
+          : -1
 
     if (ratingA !== ratingB) {
       return ratingB - ratingA

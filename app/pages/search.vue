@@ -1,0 +1,218 @@
+<template>
+  <main role="main" class="search-page">
+    <section class="search-hero" aria-labelledby="search-title">
+      <div class="search-hero__inner container">
+        <BackButton class="search-hero__back" />
+
+        <div class="search-hero__header">
+          <p class="search-hero__eyebrow">Search</p>
+          <h1 id="search-title" class="search-hero__title">Find the show you're craving</h1>
+          <p class="search-hero__copy">
+            Look up titles across every genre and language. We surface the best matches instantly.
+          </p>
+        </div>
+
+        <HeroSearch v-model="searchInput" @search="handleSearch" />
+
+        <p class="search-hero__hint" aria-live="polite">
+          <span v-if="!hasQuery">Try "The Office", "Game of Thrones", or "Stranger Things".</span>
+          <span v-else-if="pending">Searching for "{{ trimmedQuery }}"...</span>
+          <span v-else-if="hasResults">{{ results.length }} results for "{{ trimmedQuery }}"</span>
+          <span v-else>No matches for "{{ trimmedQuery }}" yet.</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="container search-results" aria-live="polite">
+      <div v-if="error" class="search-results__state search-results__state--error" role="alert">
+        <p>We couldn't search right now. Please try again.</p>
+      </div>
+
+      <div v-else-if="pending && hasQuery" class="search-results__state">
+        <p>Searching for "{{ trimmedQuery }}"...</p>
+      </div>
+
+      <div v-else-if="!hasQuery" class="search-results__state">
+        <p>Start typing a show name to see matches.</p>
+      </div>
+
+      <ul v-else-if="hasResults" class="search-results__grid" role="list">
+        <li
+          v-for="(show, index) in results"
+          :key="show.id ?? `${show.title}-${index}`"
+          class="search-results__item"
+          role="listitem"
+        >
+          <ShowCard
+            :id="show.id || `${show.title}-${index}`"
+            :slug="show.slug"
+            :title="show.title"
+            :year="show.year"
+            :rating="show.rating"
+            :image-src="show.imageSrc"
+            :alt="`${show.title} poster`"
+          />
+        </li>
+      </ul>
+
+      <div v-else class="search-results__state">
+        <p>No shows found for "{{ trimmedQuery }}".</p>
+      </div>
+    </section>
+  </main>
+</template>
+
+<script setup>
+import { ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useSeoMeta } from 'nuxt/app'
+import { useShowSearch } from '~/composables/useShowSearch'
+
+const route = useRoute()
+const router = useRouter()
+
+const initialQuery = typeof route.query.q === 'string' ? route.query.q : ''
+const searchInput = ref(initialQuery)
+const activeQuery = ref(initialQuery)
+
+const { results, pending, error, hasQuery, hasResults, trimmedQuery } = useShowSearch(activeQuery)
+
+watch(
+  () => route.query.q,
+  (value) => {
+    const normalized = typeof value === 'string' ? value : ''
+    searchInput.value = normalized
+    activeQuery.value = normalized
+  }
+)
+
+const handleSearch = (value) => {
+  const normalized = value.trim()
+  searchInput.value = normalized
+  activeQuery.value = normalized
+
+  const query = normalized ? { q: normalized } : {}
+  router.replace({ path: '/search', query })
+}
+
+useSeoMeta({
+  title: 'Search TV Shows',
+  description: 'Search thousands of TV shows instantly by title, genre, or language.',
+  ogTitle: 'Search TV Shows',
+  ogDescription: 'Search thousands of TV shows instantly by title, genre, or language.',
+})
+</script>
+
+<style scoped>
+.search-page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 80px;
+}
+
+.search-hero {
+  border-bottom: 0.66px solid var(--color-border-soft);
+  background: linear-gradient(135deg, rgba(255, 251, 235, 0.8), rgba(255, 255, 255, 0.8));
+}
+
+.search-hero__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 48px 0 36px;
+}
+
+.search-hero__back {
+  align-self: flex-start;
+}
+
+.search-hero__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-hero__eyebrow {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+}
+
+.search-hero__title {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.25;
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-ink);
+}
+
+.search-hero__copy {
+  margin: 0;
+  max-width: 640px;
+  color: var(--color-muted);
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+.search-hero__hint {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.search-results__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.search-results__item {
+  list-style: none;
+}
+
+.search-results__state {
+  padding: 40px 16px;
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--color-muted);
+  box-shadow: var(--shadow-card);
+}
+
+.search-results__state--error {
+  color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.25);
+}
+
+@media (max-width: 640px) {
+  .search-page {
+    gap: 24px;
+  }
+
+  .search-hero__inner {
+    padding: 32px 0 28px;
+  }
+
+  .search-hero__title {
+    font-size: 26px;
+  }
+
+  .search-results__grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+</style>

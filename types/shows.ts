@@ -12,7 +12,7 @@ export interface ShowItem {
   summary?: string
   alt?: string
   url?: string
-   genres?: string[]
+  genres?: string[]
 }
 
 export interface CastMember {

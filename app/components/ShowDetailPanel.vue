@@ -44,11 +44,7 @@
       <div v-else-if="activeTab === 'cast'" class="detail-card__cast">
         <template v-if="castToRender.length">
           <div class="detail-card__cast-grid">
-            <div
-              v-for="member in visibleCast"
-              :key="member.id"
-              class="detail-card__cast-row"
-            >
+            <div v-for="member in visibleCast" :key="member.id" class="detail-card__cast-row">
               <div class="detail-card__cast-avatar" aria-hidden="true">
                 <NuxtImg
                   v-if="member.image"
@@ -107,14 +103,12 @@ const year = computed(() => props.show?.year ?? '')
 const displayRating = computed(() => props.show?.rating ?? '—')
 const language = computed(() => props.show?.language || '')
 
-const summaryText = computed(
-  () => {
-    const trimmed = props.summary?.trim()
-    if (trimmed) return trimmed
+const summaryText = computed(() => {
+  const trimmed = props.summary?.trim()
+  if (trimmed) return trimmed
 
-    return `${title.value} is a popular show${year.value ? ` from ${year.value}` : ''}. Rated ${displayRating.value}/10.`
-  }
-)
+  return `${title.value} is a popular show${year.value ? ` from ${year.value}` : ''}. Rated ${displayRating.value}/10.`
+})
 
 const genresToRender = computed(() => {
   if (props.genres?.length) return props.genres
@@ -124,7 +118,9 @@ const genresToRender = computed(() => {
 const castToRender = computed(() => props.cast || [])
 
 const showAllCast = ref(false)
-const visibleCast = computed(() => (showAllCast.value ? castToRender.value : castToRender.value.slice(0, 4)))
+const visibleCast = computed(() =>
+  showAllCast.value ? castToRender.value : castToRender.value.slice(0, 4)
+)
 const hasMoreCast = computed(() => castToRender.value.length > 4)
 
 const tabs = computed(() => {
