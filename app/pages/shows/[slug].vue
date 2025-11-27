@@ -51,14 +51,7 @@
 
 <script setup>
 const route = useRoute()
-const { dramaShows, comedy, horror, thriller, pending } = useShows()
-
-const allShows = computed(() => [
-  ...dramaShows.value,
-  ...comedy.value,
-  ...horror.value,
-  ...thriller.value,
-])
+const { allShows, pending } = useShows()
 
 const show = computed(() => {
   const slugParam = String(route.params.slug)
@@ -99,7 +92,7 @@ const summaryText = computed(() => {
   return show.value?.summary || ''
 })
 
-const detailGenres = computed(() => ['Drama', 'Thriller'])
+const detailGenres = computed(() => show.value?.genres || [])
 const castCount = computed(() => cast.value?.length || 0)
 const episodeCount = computed(() => 5)
 

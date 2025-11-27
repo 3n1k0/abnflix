@@ -1,7 +1,5 @@
 export type RatingValue = number | string
 
-export type GenreKey = 'Drama' | 'Comedy' | 'Horror' | 'Thriller'
-
 export interface ShowItem {
   id?: string | number
   slug?: string
@@ -14,6 +12,7 @@ export interface ShowItem {
   summary?: string
   alt?: string
   url?: string
+   genres?: string[]
 }
 
 export interface CastMember {
@@ -40,9 +39,12 @@ export interface TvMazeShow {
   } | null
 }
 
-export interface ShowsByGenre {
-  drama: ShowItem[]
-  comedy: ShowItem[]
-  horror: ShowItem[]
-  thriller: ShowItem[]
+export interface GenreBucket {
+  name: string
+  shows: ShowItem[]
+}
+
+export interface ShowsResponse {
+  genres: GenreBucket[]
+  totalGenres: number
 }

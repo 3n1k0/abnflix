@@ -118,7 +118,7 @@ const summaryText = computed(
 
 const genresToRender = computed(() => {
   if (props.genres?.length) return props.genres
-  return ['Drama', 'Thriller']
+  return []
 })
 
 const castToRender = computed(() => props.cast || [])

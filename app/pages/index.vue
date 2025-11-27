@@ -2,26 +2,24 @@
   <main role="main" class="main-content">
     <HeroSection />
 
-    <section class="container genre-section" aria-label="Genre: Drama">
-      <ShowList title="Drama" action-label="View All" :shows="dramaShows" :eager-load-count="4" />
-    </section>
-
-    <section class="container genre-section" aria-label="Genre: Comedy">
-      <ShowList title="Comedy" action-label="View All" :shows="comedy" />
-    </section>
-
-    <section class="container genre-section" aria-label="Genre: Horror">
-      <ShowList title="Horror" action-label="View All" :shows="horror" />
-    </section>
-
-    <section class="container genre-section" aria-label="Genre: Thriller">
-      <ShowList title="Thriller" action-label="View All" :shows="thriller" />
+    <section
+      v-for="(genre, index) in genres"
+      :key="genre.name"
+      class="container genre-section"
+      :aria-label="`Genre: ${genre.name}`"
+    >
+      <ShowList
+        :title="genre.name"
+        action-label="View All"
+        :shows="genre.shows"
+        :eager-load-count="index === 0 ? 4 : 0"
+      />
     </section>
   </main>
 </template>
 
 <script setup>
-const { dramaShows, comedy, horror, thriller } = useShows()
+const { genres } = useShows()
 
 useSeoMeta({
   title: 'TV Shows Dashboard',

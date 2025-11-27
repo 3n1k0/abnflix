@@ -1,23 +1,20 @@
-import type { GenreKey, ShowItem, ShowsByGenre, TvMazeShow } from '../../types/shows'
-
-const TARGET_GENRES: GenreKey[] = ['Drama', 'Comedy', 'Horror', 'Thriller']
-const GENRE_BUCKETS: Record<GenreKey, keyof ShowsByGenre> = {
-  Drama: 'drama',
-  Comedy: 'comedy',
-  Horror: 'horror',
-  Thriller: 'thriller',
-}
+import type { GenreBucket, ShowItem, ShowsResponse, TvMazeShow } from '../../types/shows'
 
 const SHOWS_PER_GENRE = 10
 const MAX_PAGES = 50
+const MAX_GENRES = 4
 
-function hasEnoughShows(groups: ShowsByGenre): boolean {
-  return (
-    groups.drama.length >= SHOWS_PER_GENRE &&
-    groups.comedy.length >= SHOWS_PER_GENRE &&
-    groups.horror.length >= SHOWS_PER_GENRE &&
-    groups.thriller.length >= SHOWS_PER_GENRE
-  )
+function sortByRating(shows: ShowItem[]): ShowItem[] {
+  return [...shows].sort((a, b) => {
+    const ratingA = a.rating ?? -1
+    const ratingB = b.rating ?? -1
+
+    if (ratingA !== ratingB) {
+      return ratingB - ratingA
+    }
+
+    return (a.title || '').localeCompare(b.title || '')
+  })
 }
 
 function transformShow(show: TvMazeShow): ShowItem {
@@ -34,21 +31,19 @@ function transformShow(show: TvMazeShow): ShowItem {
     language: show.language || undefined,
     summary: plainSummary || undefined,
     url: show.url,
+    genres: show.genres || [],
   }
 }
 
 export default cachedEventHandler(
   async () => {
-    const showsByGenre: ShowsByGenre = {
-      drama: [],
-      comedy: [],
-      horror: [],
-      thriller: [],
-    }
+    const allGenres = new Set<string>()
+    const genreOrder: string[] = []
+    const buckets: Record<string, ShowItem[]> = {}
 
     let page = 0
 
-    while (page < MAX_PAGES && !hasEnoughShows(showsByGenre)) {
+    while (page < MAX_PAGES) {
       const response = await $fetch<TvMazeShow[]>(`https://api.tvmaze.com/shows?page=${page}`)
 
       if (!Array.isArray(response) || response.length === 0) {
@@ -58,13 +53,22 @@ export default cachedEventHandler(
       for (const show of response) {
         if (!show.genres?.length) continue
 
-        for (const genre of TARGET_GENRES) {
-          if (!show.genres.includes(genre)) continue
+        for (const genre of show.genres) {
+          if (!genre) continue
 
-          const bucket = GENRE_BUCKETS[genre]
+          if (!allGenres.has(genre)) {
+            allGenres.add(genre)
+            genreOrder.push(genre)
+          }
 
-          if (showsByGenre[bucket].length < SHOWS_PER_GENRE) {
-            showsByGenre[bucket].push(transformShow(show))
+          if (genreOrder.indexOf(genre) >= MAX_GENRES) {
+            continue
+          }
+
+          const bucket = buckets[genre] || (buckets[genre] = [])
+
+          if (bucket.length < SHOWS_PER_GENRE) {
+            bucket.push(transformShow(show))
           }
         }
       }
@@ -72,7 +76,19 @@ export default cachedEventHandler(
       page++
     }
 
-    return showsByGenre
+    const selectedGenres = genreOrder.slice(0, MAX_GENRES)
+
+    const genres: GenreBucket[] = selectedGenres.map((name) => ({
+      name,
+      shows: sortByRating(buckets[name] || []),
+    }))
+
+    const payload: ShowsResponse = {
+      genres,
+      totalGenres: allGenres.size,
+    }
+
+    return payload
   },
   {
     maxAge: 60 * 60,

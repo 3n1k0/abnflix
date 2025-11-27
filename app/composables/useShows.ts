@@ -1,4 +1,4 @@
-import type { ShowsByGenre } from '../../types/shows'
+import type { ShowsResponse } from '../../types/shows'
 import { computed } from 'vue'
 import { useAsyncData } from 'nuxt/app'
 
@@ -7,23 +7,18 @@ export function useShows() {
     data: rawShows,
     pending,
     error,
-  } = useAsyncData<ShowsByGenre>('shows-v2', () => $fetch('/api/shows?v=2'))
+  } = useAsyncData<ShowsResponse>('shows-v4', () => $fetch('/api/shows?v=4'))
 
-  const dramaShows = computed(() => rawShows.value?.drama || [])
-
-  const comedy = computed(() => rawShows.value?.comedy || [])
-
-  const horror = computed(() => rawShows.value?.horror || [])
-
-  const thriller = computed(() => rawShows.value?.thriller || [])
+  const genres = computed(() => rawShows.value?.genres || [])
+  const totalGenres = computed(() => rawShows.value?.totalGenres || 0)
+  const allShows = computed(() => genres.value.flatMap((genre) => genre.shows || []))
 
   return {
     rawShows,
     pending,
     error,
-    dramaShows,
-    comedy,
-    horror,
-    thriller,
+    genres,
+    totalGenres,
+    allShows,
   }
 }
