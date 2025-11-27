@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import StarIcon from "./icons/StarIcon.vue";
+import StarIcon from './icons/StarIcon.vue'
 
 const props = defineProps({
   value: {
@@ -15,10 +15,10 @@ const props = defineProps({
   },
   label: {
     type: String,
-    default: "",
+    default: '',
   },
-});
-const ariaLabel = computed(() => props.label || "User rating");
+})
+const ariaLabel = computed(() => props.label || 'User rating')
 </script>
 
 <style scoped>

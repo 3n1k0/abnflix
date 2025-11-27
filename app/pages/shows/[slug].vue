@@ -1,4 +1,3 @@
-
 <template>
   <main role="main" class="show-detail">
     <div class="container">
@@ -16,7 +15,11 @@
             loading="eager"
             decoding="async"
           />
-          <RatingBadge v-if="show.rating != null" class="show-detail__rating" :value="show.rating" />
+          <RatingBadge
+            v-if="show.rating != null"
+            class="show-detail__rating"
+            :value="show.rating"
+          />
         </div>
         <div class="show-detail__info">
           <h1 class="show-detail__title">{{ show.title }}</h1>
@@ -24,8 +27,8 @@
           <div class="show-detail__description">
             <h2>About this show</h2>
             <p>
-{{ show.title }} is a popular show with a rating of {{ show.rating }}/10.
-              This {{ show.year }} production has become a must-watch for fans of quality television.
+              {{ show.title }} is a popular show with a rating of {{ show.rating }}/10. This
+              {{ show.year }} production has become a must-watch for fans of quality television.
             </p>
           </div>
 
@@ -47,25 +50,26 @@
 </template>
 
 <script setup>
-
-const route = useRoute();
-const { dramaShows, comedy, horror, thriller } = useShows();
+const route = useRoute()
+const { dramaShows, comedy, horror, thriller } = useShows()
 
 const allShows = computed(() => [
   ...dramaShows.value,
   ...comedy.value,
   ...horror.value,
-  ...thriller.value
-]);
+  ...thriller.value,
+])
 
 const show = computed(() => {
-  const slug = route.params.slug;
-  return allShows.value.find((s) => s.slug === slug);
-});
+  const slug = route.params.slug
+  return allShows.value.find((s) => s.slug === slug)
+})
 
 useHead({
-  title: computed(() => (show.value ? `${show.value.title} - TV Shows Dashboard` : "Show Not Found")),
-});
+  title: computed(() =>
+    show.value ? `${show.value.title} - TV Shows Dashboard` : 'Show Not Found'
+  ),
+})
 </script>
 
 <style scoped>

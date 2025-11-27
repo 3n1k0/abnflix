@@ -1,83 +1,64 @@
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
-import type { Ref } from 'vue'
 
-interface ScrollState {
-  canScrollPrev: Ref<boolean>
-  canScrollNext: Ref<boolean>
-  scrollNext: () => void
-  scrollPrev: () => void
-  updateScrollState: () => void
-}
-
-export function useHorizontalScroller<T = unknown>(
-  gridRef: Ref<HTMLElement | null>,
-  items: Ref<T[]>
-): ScrollState {
+export function useHorizontalScroller(gridRef, items) {
   const canScrollPrev = ref(false)
   const canScrollNext = ref(false)
 
-  const updateScrollState = (): void => {
-    const grid = gridRef.value
-    if (!grid) return
+  const updateScrollState = () => {
+    const el = gridRef.value
+    if (!el) return
 
-    const { scrollLeft, scrollWidth, clientWidth } = grid
-    const maxScroll = scrollWidth - clientWidth
+    const { scrollLeft, scrollWidth, clientWidth } = el
+    const max = scrollWidth - clientWidth
 
-    const hasOverflow = scrollWidth > clientWidth + 2
+    const overflow = scrollWidth > clientWidth
 
-    canScrollPrev.value = hasOverflow && scrollLeft > 0
-    canScrollNext.value = hasOverflow && scrollLeft < maxScroll - 1
+    canScrollPrev.value = overflow && scrollLeft > 0
+    canScrollNext.value = overflow && scrollLeft < max
   }
 
-  const getScrollAmount = (): number => {
-    const grid = gridRef.value
-    if (!grid) return 0
+  const getScrollAmount = () => {
+    const el = gridRef.value
+    if (!el) return 0
 
-    const first = grid.querySelector('.carousel-item')
-    const gap = parseFloat(getComputedStyle(grid).columnGap || '0')
+    const first = el.querySelector('.show-list__card')
+    if (!first) return el.clientWidth * 0.8
 
-    if (first) {
-      return first.getBoundingClientRect().width + gap
-    }
-
-    return grid.clientWidth * 0.8 // fallback
+    const gap = parseFloat(getComputedStyle(el).columnGap || '0')
+    return first.getBoundingClientRect().width + gap
   }
 
-  const scrollNext = (): void => {
-    const grid = gridRef.value
-    if (!grid) return
-
-    grid.scrollBy({ left: getScrollAmount(), behavior: 'smooth' })
+  const scrollNext = () => {
+    const el = gridRef.value
+    if (!el) return
+    el.scrollBy({ left: getScrollAmount(), behavior: 'smooth' })
   }
 
-  const scrollPrev = (): void => {
-    const grid = gridRef.value
-    if (!grid) return
-
-    grid.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' })
+  const scrollPrev = () => {
+    const el = gridRef.value
+    if (!el) return
+    el.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' })
   }
 
   onMounted(() => {
-    const grid = gridRef.value
-    if (!grid) return
+    const el = gridRef.value
+    if (!el) return
 
     updateScrollState()
 
-    const listener = (): void => updateScrollState()
-    grid.addEventListener('scroll', listener, { passive: true })
+    const listener = () => updateScrollState()
+    el.addEventListener('scroll', listener, { passive: true })
     window.addEventListener('resize', listener)
 
-    nextTick(updateScrollState)
-
     onBeforeUnmount(() => {
-      grid.removeEventListener('scroll', listener)
+      el.removeEventListener('scroll', listener)
       window.removeEventListener('resize', listener)
     })
-  })
 
-  watch(items, () => {
     nextTick(updateScrollState)
   })
+
+  watch(items, () => nextTick(updateScrollState))
 
   return {
     canScrollPrev,

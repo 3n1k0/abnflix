@@ -6,11 +6,11 @@
 </template>
 
 <script setup>
-const router = useRouter();
+const router = useRouter()
 
 const goBack = () => {
-  router.back();
-};
+  router.back()
+}
 </script>
 
 <style scoped>

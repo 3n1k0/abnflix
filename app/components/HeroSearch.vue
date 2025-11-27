@@ -1,8 +1,13 @@
 <template>
-  <form class="hero-search" role="search" aria-label="Search for shows" @submit.prevent="handleSubmit">
+  <form
+    class="hero-search"
+    role="search"
+    aria-label="Search for shows"
+    @submit.prevent="handleSubmit"
+  >
     <label class="sr-only" for="hero-search-input">Search for shows</label>
     <span class="hero-search__icon" aria-hidden="true">
-      <img src="/icons/search-icon.svg" alt="" aria-hidden="true" width="20" height="20" >
+      <img src="/icons/search-icon.svg" alt="" aria-hidden="true" width="20" height="20" />
     </span>
     <input
       id="hero-search-input"
@@ -12,7 +17,7 @@
       placeholder="Search for shows..."
       autocomplete="off"
       class="form-control"
-    >
+    />
   </form>
 </template>
 
@@ -20,34 +25,34 @@
 const props = defineProps({
   modelValue: {
     type: String,
-    default: "",
+    default: '',
   },
-});
+})
 
-const emit = defineEmits(["update:modelValue", "search"]);
+const emit = defineEmits(['update:modelValue', 'search'])
 
-const query = ref(props.modelValue ?? "");
+const query = ref(props.modelValue ?? '')
 
 watch(
   () => props.modelValue,
   (value) => {
-    query.value = value ?? "";
-  },
-);
+    query.value = value ?? ''
+  }
+)
 
 const updateQuery = (value) => {
-  query.value = value;
-  emit("update:modelValue", value);
-};
+  query.value = value
+  emit('update:modelValue', value)
+}
 
 const queryModel = computed({
   get: () => query.value,
   set: updateQuery,
-});
+})
 
 const handleSubmit = () => {
-  emit("search", query.value.trim());
-};
+  emit('search', query.value.trim())
+}
 </script>
 
 <style scoped>

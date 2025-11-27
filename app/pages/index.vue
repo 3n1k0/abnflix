@@ -21,11 +21,11 @@
 </template>
 
 <script setup>
-const { dramaShows, comedy, horror, thriller } = useShows();
+const { dramaShows, comedy, horror, thriller } = useShows()
 
 useHead({
-  title: "TV Shows Dashboard",
-});
+  title: 'TV Shows Dashboard',
+})
 </script>
 
 <style scoped>

@@ -1,16 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-import { defineNuxtConfig } from "nuxt/config";
+import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  modules: ["@nuxt/eslint", "@nuxt/image"],
-  css: ["~/assets/css/main.css"],
-  compatibilityDate: "2025-07-15",
+  modules: ['@nuxt/eslint', '@nuxt/image'],
+  css: ['~/assets/css/main.css'],
+  compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  srcDir: "app/",
+  srcDir: 'app/',
   components: [
     {
-      path: "~/components",
+      path: '~/components',
       pathPrefix: false,
     },
   ],
@@ -27,12 +27,7 @@ export default defineNuxtConfig({
   },
   typescript: {
     tsConfig: {
-      include: [
-        "../types/**/*.d.ts",
-        "types/**/*.d.ts",
-        "env.d.ts",
-        "app/components/**/*.vue",
-      ],
+      include: ['../types/**/*.d.ts', 'types/**/*.d.ts', 'env.d.ts', 'app/components/**/*.vue'],
     },
   },
-});
+})

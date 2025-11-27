@@ -70,17 +70,16 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
-});
+})
 
-const normalizedShows = computed(() => props.shows?.slice() || []);
+const normalizedShows = computed(() => props.shows?.slice() || [])
 
-const gridRef = ref(null);
+const gridRef = ref(null)
 
 const { canScrollPrev, canScrollNext, scrollPrev, scrollNext } = useHorizontalScroller(
   gridRef,
-  normalizedShows,
-  { itemSelector: '.show-list__card', fallbackItemsThreshold: 3 }
-);
+  normalizedShows
+)
 </script>
 
 <style scoped>

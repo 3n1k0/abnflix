@@ -39,11 +39,11 @@ defineProps({
   },
   imageSrc: {
     type: String,
-    default: "/images/show-card.png",
+    default: '/images/show-card.png',
   },
   alt: {
     type: String,
-    default: "",
+    default: '',
   },
   rating: {
     type: [Number, String],
@@ -57,7 +57,7 @@ defineProps({
     type: Boolean,
     default: false,
   },
-});
+})
 </script>
 
 <style scoped>
