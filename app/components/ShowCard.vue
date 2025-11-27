@@ -5,13 +5,15 @@
         <NuxtImg
           :src="imageSrc"
           :alt="alt || `${title} poster`"
-          :loading="eagerLoad ? 'eager' : 'lazy'"
+          :loading="eagerLoad || fetchPriority === 'high' ? 'eager' : 'lazy'"
+          :fetchpriority="fetchPriority"
           width="192"
           height="288"
           format="webp"
-          quality="80"
+          quality="72"
           fit="cover"
           decoding="async"
+          sizes="(max-width: 640px) 70vw, 192px"
         />
 
         <RatingBadge v-if="rating != null" class="show-card__rating" :value="rating" />
@@ -24,6 +26,8 @@
 </template>
 
 <script setup>
+import RatingBadge from './RatingBadge.vue'
+
 defineProps({
   id: {
     type: [String, Number],
@@ -56,6 +60,10 @@ defineProps({
   eagerLoad: {
     type: Boolean,
     default: false,
+  },
+  fetchPriority: {
+    type: String,
+    default: 'auto',
   },
 })
 </script>

@@ -10,10 +10,11 @@
             width="400"
             height="600"
             format="webp"
-            quality="85"
+            quality="75"
             fit="cover"
             loading="eager"
             decoding="async"
+            sizes="(max-width: 640px) 80vw, 400px"
           />
           <RatingBadge
             v-if="show.rating != null"
@@ -65,10 +66,26 @@ const show = computed(() => {
   return allShows.value.find((s) => s.slug === slug)
 })
 
-useHead({
-  title: computed(() =>
-    show.value ? `${show.value.title} - TV Shows Dashboard` : 'Show Not Found'
-  ),
+const showTitle = computed(() =>
+  show.value ? `${show.value.title} - TV Shows Dashboard` : 'Show Not Found'
+)
+
+const showDescription = computed(() => {
+  if (!show.value) {
+    return 'Show not found on TV Shows Dashboard.'
+  }
+
+  const year = show.value.year ? ` (${show.value.year})` : ''
+  const rating = show.value.rating != null ? ` Rated ${show.value.rating}/10.` : ''
+
+  return `${show.value.title}${year} on TV Shows Dashboard.${rating}`
+})
+
+useSeoMeta({
+  title: () => showTitle.value,
+  description: () => showDescription.value,
+  ogTitle: () => showTitle.value,
+  ogDescription: () => showDescription.value,
 })
 </script>
 

@@ -23,8 +23,13 @@
 <script setup>
 const { dramaShows, comedy, horror, thriller } = useShows()
 
-useHead({
+useSeoMeta({
   title: 'TV Shows Dashboard',
+  description:
+    'Explore thousands of TV shows across all genres. Find your next favorite show tonight.',
+  ogTitle: 'TV Shows Dashboard',
+  ogDescription:
+    'Explore thousands of TV shows across all genres. Find your next favorite show tonight.',
 })
 </script>
 

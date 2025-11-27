@@ -11,6 +11,9 @@ describe('ShowCard', () => {
           template: '<a :to="to"><slot /></a>',
           props: ['to'],
         },
+        NuxtImg: {
+          template: '<img v-bind="$attrs" />',
+        },
       },
     },
   }

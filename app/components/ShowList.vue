@@ -2,7 +2,7 @@
   <section class="show-list">
     <header class="show-list__header">
       <h2 class="show-list__title">{{ title }}</h2>
-      <button type="button" class="show-list__action">
+      <button type="button" class="show-list__action" @click="emit('view-all')">
         {{ actionLabel }}
       </button>
     </header>
@@ -20,22 +20,26 @@
         <ChevronLeftIcon />
       </button>
 
-      <div ref="gridRef" class="show-list__grid" role="list">
-        <ShowCard
+      <ul ref="gridRef" class="show-list__grid" role="list">
+        <li
           v-for="(show, index) in normalizedShows"
-          :id="show.id"
           :key="show.id ?? show.title"
-          role="listitem"
           class="show-list__card"
-          :slug="show.slug"
-          :title="show.title"
-          :year="show.year"
-          :rating="show.rating"
-          :image-src="show.imageSrc"
-          :alt="`${show.title} poster`"
-          :eager-load="index < eagerLoadCount"
-        />
-      </div>
+          role="listitem"
+        >
+          <ShowCard
+            :id="show.id"
+            :slug="show.slug"
+            :title="show.title"
+            :year="show.year"
+            :rating="show.rating"
+            :image-src="show.imageSrc"
+            :alt="`${show.title} poster`"
+            :eager-load="index < eagerLoadCount"
+            :fetch-priority="index === 0 ? 'high' : 'auto'"
+          />
+        </li>
+      </ul>
 
       <button
         type="button"
@@ -53,6 +57,14 @@
 </template>
 
 <script setup>
+import { computed, ref } from 'vue'
+import ChevronLeftIcon from './icons/ChevronLeftIcon.vue'
+import ChevronRightIcon from './icons/ChevronRightIcon.vue'
+import ShowCard from './ShowCard.vue'
+import { useHorizontalScroller } from '~/composables/useHorizontalScroller'
+
+const emit = defineEmits(['view-all'])
+
 const props = defineProps({
   title: {
     type: String,
@@ -135,10 +147,13 @@ const { canScrollPrev, canScrollNext, scrollPrev, scrollNext } = useHorizontalSc
   gap: 16px;
   overflow-x: auto;
   padding: 8px 0;
+  margin: 0;
+  list-style: none;
   scroll-snap-type: x mandatory;
 }
 
 .show-list__card {
+  list-style: none;
   scroll-snap-align: start;
 }
 

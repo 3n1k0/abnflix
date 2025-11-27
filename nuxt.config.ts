@@ -14,9 +14,6 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
-  features: {
-    inlineStyles: false, // Disable inline styles for proper SSR CSS handling
-  },
   vite: {
     css: {
       devSourcemap: true,
@@ -28,6 +25,13 @@ export default defineNuxtConfig({
   typescript: {
     tsConfig: {
       include: ['../types/**/*.d.ts', 'types/**/*.d.ts', 'env.d.ts', 'app/components/**/*.vue'],
+    },
+  },
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'en',
+      },
     },
   },
 })

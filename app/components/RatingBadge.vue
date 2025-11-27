@@ -6,6 +6,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import StarIcon from './icons/StarIcon.vue'
 
 const props = defineProps({

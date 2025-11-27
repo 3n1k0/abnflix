@@ -10,7 +10,9 @@
   </section>
 </template>
 
-<script setup></script>
+<script setup>
+import HeroSearch from './HeroSearch.vue'
+</script>
 
 <style scoped>
 .hero {

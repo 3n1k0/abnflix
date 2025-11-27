@@ -1,16 +1,34 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
-import ShowCard from '@/components/ShowCard.vue'
-import ShowList from '@/components/ShowList.vue'
+import ShowCard from '~/components/ShowCard.vue'
+import ShowList from '~/components/ShowList.vue'
 
 describe('ShowList', () => {
+  const shows = [
+    { id: 1, title: 'Custom One', year: '2020', rating: 7.0, imageSrc: '/foo.png' },
+    { id: 2, title: 'Custom Two', year: '2021', rating: 8.0, imageSrc: '/bar.png' },
+  ]
+
+  const baseProps = {
+    title: 'Drama',
+    actionLabel: 'View All',
+    shows,
+  }
+
   const mountOptions = {
+    props: baseProps,
     global: {
+      components: { ShowCard },
       stubs: {
         NuxtLink: {
           template: '<a :to="to"><slot /></a>',
           props: ['to'],
         },
+        NuxtImg: {
+          template: '<img v-bind="$attrs" />',
+        },
+        ChevronLeftIcon: true,
+        ChevronRightIcon: true,
       },
     },
   }
@@ -21,7 +39,7 @@ describe('ShowList', () => {
     expect(wrapper.get('.show-list__action').text()).toBe('View All')
 
     const cards = wrapper.findAllComponents(ShowCard)
-    expect(cards.length).toBeGreaterThanOrEqual(5)
+    expect(cards.length).toBe(shows.length)
   })
 
   it('emits a view-all event when the action is clicked', async () => {
@@ -32,17 +50,12 @@ describe('ShowList', () => {
   })
 
   it('renders provided shows and title', () => {
-    const shows = [
-      { id: 1, title: 'Custom One', year: '2020', rating: 7.0, imageSrc: '/foo.png' },
-      { id: 2, title: 'Custom Two', year: '2021', rating: 8.0, imageSrc: '/bar.png' },
-    ]
-
     const wrapper = mount(ShowList, {
       ...mountOptions,
       props: {
+        ...baseProps,
         title: 'Comedy',
         actionLabel: 'See more',
-        shows,
       },
     })
 
