@@ -55,7 +55,7 @@ describe('ShowCard', () => {
       props: {
         id: 3,
         title: 'Signal Lost',
-        rating: null,
+        rating: undefined,
       },
     })
 

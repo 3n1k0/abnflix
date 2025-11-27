@@ -64,8 +64,8 @@ describe('ShowList', () => {
 
     const cards = wrapper.findAllComponents(ShowCard)
     expect(cards).toHaveLength(2)
-    expect(cards[0].props('title')).toBe('Custom One')
-    expect(cards[1].props('title')).toBe('Custom Two')
+    expect(cards[0]?.props('title')).toBe('Custom One')
+    expect(cards[1]?.props('title')).toBe('Custom Two')
   })
 
   it('scrolls the grid when the arrow button is clicked', async () => {

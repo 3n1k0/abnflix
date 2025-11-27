@@ -21,6 +21,8 @@ function hasEnoughShows(groups: ShowsByGenre): boolean {
 }
 
 function transformShow(show: TvMazeShow): ShowItem {
+  const plainSummary = show.summary?.replace(/<[^>]*>/g, '').trim()
+
   return {
     id: show.id,
     slug: show.url ? show.url.split('/').pop() : String(show.id),
@@ -28,6 +30,9 @@ function transformShow(show: TvMazeShow): ShowItem {
     year: show.premiered ? new Date(show.premiered).getFullYear() : undefined,
     rating: show.rating?.average || null,
     imageSrc: show.image?.medium || show.image?.original || undefined,
+    imageFullSrc: show.image?.original || show.image?.medium || undefined,
+    language: show.language || undefined,
+    summary: plainSummary || undefined,
     url: show.url,
   }
 }

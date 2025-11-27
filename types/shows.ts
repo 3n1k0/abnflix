@@ -9,6 +9,9 @@ export interface ShowItem {
   year?: string | number
   rating?: RatingValue | null
   imageSrc?: string
+  imageFullSrc?: string
+  language?: string
+  summary?: string
   alt?: string
   url?: string
 }
@@ -16,7 +19,9 @@ export interface ShowItem {
 export interface TvMazeShow {
   id: number
   url?: string
+  language?: string | null
   name: string
+  summary?: string | null
   genres?: string[]
   premiered?: string | null
   rating?: {

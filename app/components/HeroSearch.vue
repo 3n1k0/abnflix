@@ -7,7 +7,7 @@
   >
     <label class="sr-only" for="hero-search-input">Search for shows</label>
     <span class="hero-search__icon" aria-hidden="true">
-      <img src="/icons/search-icon.svg" alt="" aria-hidden="true" width="20" height="20" />
+      <SearchIcon aria-hidden="true" />
     </span>
     <input
       id="hero-search-input"
@@ -78,7 +78,7 @@ const handleSubmit = () => {
   pointer-events: none;
 }
 
-.hero-search__icon img {
+.hero-search__icon svg {
   width: var(--icon-sm);
   height: var(--icon-sm);
   display: block;

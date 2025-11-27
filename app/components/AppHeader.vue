@@ -2,9 +2,7 @@
   <header class="app-header">
     <div class="header-inner container">
       <a class="brand" href="#" aria-label="TV Shows home">
-        <span class="brand-icon" aria-hidden="true">
-          <img src="/icons/tv-logo.svg" alt="" aria-hidden="true" width="32" height="32" />
-        </span>
+        <TvLogoIcon class="brand-icon" aria-hidden="true" />
         <span class="brand-label">TV Shows</span>
       </a>
 
@@ -47,15 +45,8 @@
 .brand-icon {
   width: var(--icon-lg);
   height: var(--icon-lg);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.brand-icon img {
-  width: var(--icon-lg);
-  height: var(--icon-lg);
   display: block;
+  flex-shrink: 0;
 }
 
 .brand-label {
