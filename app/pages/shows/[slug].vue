@@ -3,7 +3,8 @@
     <div class="container">
       <BackButton />
       <div v-if="show" class="show-detail__content">
-        <div class="show-detail__poster">
+        <div class="show-detail__poster" :class="{ 'is-loading': !posterLoaded }">
+          <div v-if="!posterLoaded" class="skeleton skeleton--poster" aria-hidden="true" />
           <NuxtImg
             :src="show.imageFullSrc || show.imageSrc"
             :alt="show.alt || `${show.title} poster`"
@@ -15,6 +16,7 @@
             loading="eager"
             decoding="async"
             sizes="(max-width: 640px) 80vw, 400px"
+            @load="posterLoaded = true"
           />
           <RatingBadge
             v-if="show.rating != null"
@@ -27,9 +29,15 @@
           :show="show"
           :summary="summaryText"
           :genres="detailGenres"
+          :cast="cast || []"
           :cast-count="castCount"
           :episode-count="episodeCount"
         />
+      </div>
+
+      <div v-else-if="isLoading" class="show-detail__content">
+        <div class="show-detail__poster skeleton skeleton--poster" aria-hidden="true" />
+        <div class="show-detail__panel skeleton skeleton--panel" aria-hidden="true" />
       </div>
 
       <div v-else class="show-detail__not-found">
@@ -43,7 +51,7 @@
 
 <script setup>
 const route = useRoute()
-const { dramaShows, comedy, horror, thriller } = useShows()
+const { dramaShows, comedy, horror, thriller, pending } = useShows()
 
 const allShows = computed(() => [
   ...dramaShows.value,
@@ -57,6 +65,20 @@ const show = computed(() => {
 
   return allShows.value.find((s) => s.slug === slugParam || String(s.id) === slugParam)
 })
+
+const isLoading = computed(() => pending.value && !show.value)
+const posterLoaded = ref(false)
+watch(show, () => {
+  posterLoaded.value = false
+})
+
+const showId = computed(() => show.value?.id)
+
+const { data: cast } = useAsyncData(
+  () => `cast-${showId.value}`,
+  () => (showId.value ? $fetch(`/api/shows/${showId.value}/cast`) : []),
+  { watch: [showId] }
+)
 
 const showTitle = computed(() =>
   show.value ? `${show.value.title} - TV Shows Dashboard` : 'Show Not Found'
@@ -78,7 +100,7 @@ const summaryText = computed(() => {
 })
 
 const detailGenres = computed(() => ['Drama', 'Thriller'])
-const castCount = computed(() => 4)
+const castCount = computed(() => cast.value?.length || 0)
 const episodeCount = computed(() => 5)
 
 useSeoMeta({
@@ -119,6 +141,12 @@ useSeoMeta({
   height: 100%;
   object-fit: cover;
   display: block;
+  opacity: 1;
+  transition: opacity var(--transition-fast);
+}
+
+.show-detail__poster.is-loading img {
+  opacity: 0;
 }
 
 .show-detail__rating {
@@ -173,6 +201,47 @@ useSeoMeta({
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(229, 231, 235, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(229, 231, 235, 0) 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton--poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevated);
+}
+
+.skeleton--panel {
+  width: 100%;
+  max-width: 540px;
+  min-height: 320px;
+  border-radius: 18px;
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.08);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
   }
 }
 </style>

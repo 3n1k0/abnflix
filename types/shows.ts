@@ -16,6 +16,13 @@ export interface ShowItem {
   url?: string
 }
 
+export interface CastMember {
+  id: number
+  name: string
+  character: string
+  image?: string
+}
+
 export interface TvMazeShow {
   id: number
   url?: string
