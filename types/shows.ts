@@ -1,5 +1,7 @@
 export type RatingValue = number | string;
 
+export type GenreKey = "Drama" | "Comedy" | "Horror" | "Thriller";
+
 export interface ShowItem {
   id?: string | number;
   slug?: string;
@@ -24,4 +26,11 @@ export interface TvMazeShow {
     medium?: string | null;
     original?: string | null;
   } | null;
+}
+
+export interface ShowsByGenre {
+  drama: ShowItem[];
+  comedy: ShowItem[];
+  horror: ShowItem[];
+  thriller: ShowItem[];
 }

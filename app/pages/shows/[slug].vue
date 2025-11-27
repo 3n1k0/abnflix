@@ -2,25 +2,29 @@
 <template>
   <main role="main" class="show-detail">
     <div class="container">
-      <button class="back-button" @click="goBack" aria-label="Go back">
-        <ChevronLeftIcon />
-        <span>Back</span>
-      </button>
-
+      <BackButton />
       <div v-if="show" class="show-detail__content">
         <div class="show-detail__poster">
-          <img :src="show.imageSrc" :alt="show.alt || `${show.title} poster`" />
+          <NuxtImg
+            :src="show.imageSrc"
+            :alt="show.alt || `${show.title} poster`"
+            width="400"
+            height="600"
+            format="webp"
+            quality="85"
+            fit="cover"
+            loading="eager"
+            decoding="async"
+          />
           <RatingBadge v-if="show.rating != null" class="show-detail__rating" :value="show.rating" />
         </div>
-
         <div class="show-detail__info">
           <h1 class="show-detail__title">{{ show.title }}</h1>
           <p v-if="show.year" class="show-detail__year">{{ show.year }}</p>
-
           <div class="show-detail__description">
             <h2>About this show</h2>
             <p>
-              {{ show.title }} is a captivating series that has garnered critical acclaim with a rating of {{ show.rating }}/10.
+{{ show.title }} is a popular show with a rating of {{ show.rating }}/10.
               This {{ show.year }} production has become a must-watch for fans of quality television.
             </p>
           </div>
@@ -36,7 +40,7 @@
       <div v-else class="show-detail__not-found">
         <h1>Show Not Found</h1>
         <p>The show you're looking for doesn't exist.</p>
-        <button @click="goBack" class="back-button">Go back to home</button>
+        <BackButton />
       </div>
     </div>
   </main>
@@ -45,7 +49,6 @@
 <script setup>
 
 const route = useRoute();
-const router = useRouter();
 const { dramaShows, comedy, horror, thriller } = useShows();
 
 const allShows = computed(() => [
@@ -63,44 +66,12 @@ const show = computed(() => {
 useHead({
   title: computed(() => (show.value ? `${show.value.title} - TV Shows Dashboard` : "Show Not Found")),
 });
-
-const goBack = () => {
-  router.back();
-};
 </script>
 
 <style scoped>
 .show-detail {
   min-height: calc(100vh - 64px);
   padding: 48px 0;
-}
-
-.back-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  margin-bottom: 32px;
-  border: none;
-  border-radius: var(--radius-md);
-  background: var(--color-bg-white);
-  color: var(--color-ink);
-  font-size: var(--text-base);
-  line-height: 1.5;
-  letter-spacing: var(--tracking-base);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  box-shadow: var(--shadow-card);
-}
-
-.back-button:hover {
-  background: var(--color-bg-amber-light);
-  transform: translateX(-4px);
-}
-
-.back-button svg {
-  width: 20px;
-  height: 20px;
 }
 
 .show-detail__content {

@@ -2,12 +2,15 @@
   <NuxtLink :to="`/shows/${slug || id}`" class="show-card-link">
     <article class="show-card">
       <div class="show-card__media">
-        <img
+        <NuxtImg
           :src="imageSrc"
           :alt="alt || `${title} poster`"
           :loading="eagerLoad ? 'eager' : 'lazy'"
           width="192"
           height="288"
+          format="webp"
+          quality="80"
+          fit="cover"
           decoding="async"
         />
 

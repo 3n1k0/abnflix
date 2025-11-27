@@ -1,67 +1,75 @@
-// Module-level cache for all shows
-let cachedShows: any[] | null = null;
-let isFetching = false; // Prevent concurrent fetches
+import type { GenreKey, ShowItem, ShowsByGenre, TvMazeShow } from '../../types/shows'
 
-export default defineEventHandler(async (event) => {
-  // Return cached data immediately if available
-  if (cachedShows !== null) {
-    return cachedShows;
+const TARGET_GENRES: GenreKey[] = ['Drama', 'Comedy', 'Horror', 'Thriller']
+const GENRE_BUCKETS: Record<GenreKey, keyof ShowsByGenre> = {
+  Drama: 'drama',
+  Comedy: 'comedy',
+  Horror: 'horror',
+  Thriller: 'thriller',
+}
+
+const SHOWS_PER_GENRE = 10
+const MAX_PAGES = 50
+
+function hasEnoughShows(groups: ShowsByGenre): boolean {
+  return (
+    groups.drama.length >= SHOWS_PER_GENRE &&
+    groups.comedy.length >= SHOWS_PER_GENRE &&
+    groups.horror.length >= SHOWS_PER_GENRE &&
+    groups.thriller.length >= SHOWS_PER_GENRE
+  )
+}
+
+function transformShow(show: TvMazeShow): ShowItem {
+  return {
+    id: show.id,
+    slug: show.url ? show.url.split('/').pop() : String(show.id),
+    title: show.name,
+    year: show.premiered ? new Date(show.premiered).getFullYear() : undefined,
+    rating: show.rating?.average || null,
+    imageSrc: show.image?.medium || show.image?.original || undefined,
+    url: show.url,
   }
+}
 
-  // If already fetching, wait and return cached result
-  if (isFetching) {
-    // Wait for the fetch to complete (max 30 seconds)
-    const maxWait = 30000;
-    const startTime = Date.now();
-    while (isFetching && Date.now() - startTime < maxWait) {
-      await new Promise(resolve => setTimeout(resolve, 100));
+export default cachedEventHandler(
+  async () => {
+    const showsByGenre: ShowsByGenre = {
+      drama: [],
+      comedy: [],
+      horror: [],
+      thriller: [],
     }
-    return cachedShows || [];
-  }
 
-  isFetching = true;
+    let page = 0
 
-  try {
-    // Fetch shows from TVMaze API with limits
-    const allShows: any[] = [];
-    let page = 0;
-    const MAX_PAGES = 50; // Limit to first ~2500 shows (50 pages * ~50 shows/page)
+    while (page < MAX_PAGES && !hasEnoughShows(showsByGenre)) {
+      const response = await $fetch<TvMazeShow[]>(`https://api.tvmaze.com/shows?page=${page}`)
 
-    while (page < MAX_PAGES) {
-      try {
-        const response = await $fetch(`https://api.tvmaze.com/shows?page=${page}`);
-
-        // Stop if response is not an array or is empty
-        if (!Array.isArray(response) || response.length === 0) {
-          break;
-        }
-
-        // Merge shows into the array
-        allShows.push(...response);
-        page++;
-
-        // Add small delay to avoid rate limiting
-        if (page < MAX_PAGES) {
-          await new Promise(resolve => setTimeout(resolve, 50));
-        }
-      } catch (error: any) {
-        // Stop on 404 (no more pages)
-        if (error?.statusCode === 404 || error?.response?.status === 404) {
-          break;
-        }
-
-        // For other errors, log and stop to avoid breaking with partial data
-        console.error(`Error fetching shows page ${page}:`, error.message || error);
-        break;
+      if (!Array.isArray(response) || response.length === 0) {
+        break
       }
+
+      for (const show of response) {
+        if (!show.genres?.length) continue
+
+        for (const genre of TARGET_GENRES) {
+          if (!show.genres.includes(genre)) continue
+
+          const bucket = GENRE_BUCKETS[genre]
+
+          if (showsByGenre[bucket].length < SHOWS_PER_GENRE) {
+            showsByGenre[bucket].push(transformShow(show))
+          }
+        }
+      }
+
+      page++
     }
 
-    // Cache the results (even if partial)
-    cachedShows = allShows;
-
-    // Return plain JSON array
-    return allShows;
-  } finally {
-    isFetching = false;
+    return showsByGenre
+  },
+  {
+    maxAge: 60 * 60,
   }
-});
+)

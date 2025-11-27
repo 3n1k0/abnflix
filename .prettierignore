@@ -1,0 +1,23 @@
+# Dependencies
+node_modules
+
+# Build output
+.output
+.nuxt
+dist
+.cache
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+
+# Lock files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock

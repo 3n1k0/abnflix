@@ -2,7 +2,7 @@
   <section class="show-list">
     <header class="show-list__header">
       <h2 class="show-list__title">{{ title }}</h2>
-      <button type="button" class="show-list__action" @click="$emit('view-all')">
+      <button type="button" class="show-list__action">
         {{ actionLabel }}
       </button>
     </header>
@@ -12,10 +12,10 @@
         type="button"
         class="show-list__scroll show-list__scroll--prev"
         :class="{ 'is-hidden': !canScrollPrev }"
-        @click="scrollPrev"
         aria-label="Scroll shows backward"
         :aria-disabled="!canScrollPrev"
-        :tabindex="canScrollPrev ? 0 : -1"
+        tabindex="-1"
+        @click="scrollPrev"
       >
         <ChevronLeftIcon />
       </button>
@@ -23,10 +23,10 @@
       <div ref="gridRef" class="show-list__grid" role="list">
         <ShowCard
           v-for="(show, index) in normalizedShows"
+          :id="show.id"
           :key="show.id ?? show.title"
           role="listitem"
           class="show-list__card"
-          :id="show.id"
           :slug="show.slug"
           :title="show.title"
           :year="show.year"
@@ -41,10 +41,10 @@
         type="button"
         class="show-list__scroll show-list__scroll--next"
         :class="{ 'is-hidden': !canScrollNext }"
-        @click="scrollNext"
         aria-label="Scroll shows forward"
         :aria-disabled="!canScrollNext"
-        :tabindex="canScrollNext ? 0 : -1"
+        tabindex="-1"
+        @click="scrollNext"
       >
         <ChevronRightIcon />
       </button>
@@ -75,10 +75,12 @@ const props = defineProps({
 const normalizedShows = computed(() => props.shows?.slice() || []);
 
 const gridRef = ref(null);
-const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalScroller(gridRef, normalizedShows, {
-  itemSelector: ".show-list__card",
-  fallbackItemsThreshold: 3,
-});
+
+const { canScrollPrev, canScrollNext, scrollPrev, scrollNext } = useHorizontalScroller(
+  gridRef,
+  normalizedShows,
+  { itemSelector: '.show-list__card', fallbackItemsThreshold: 3 }
+);
 </script>
 
 <style scoped>

@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import AppHeader from "@/components/AppHeader.vue";
+import AppHeader from "~/components/AppHeader.vue";
 
 describe("AppHeader", () => {
   it("renders the brand link with accessible label", () => {
