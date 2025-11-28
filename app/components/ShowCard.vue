@@ -115,28 +115,6 @@ defineProps({
   display: block;
 }
 
-.show-card__placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: var(--gradient-card-hover);
-}
-
-.placeholder-icon {
-  font-size: 48px;
-  opacity: 0.4;
-}
-
-.placeholder-text {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  opacity: 0.6;
-}
-
 .show-card__rating {
   position: absolute;
   top: 12px;

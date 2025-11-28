@@ -26,7 +26,7 @@
               quality="85"
               fit="cover"
               sizes="(max-width: 640px) 80vw, 400px"
-              @error="handlePosterError"
+              @error="handlePosterErrorWithLog"
             />
           </div>
 
@@ -56,89 +56,23 @@
 
 <script setup>
 const route = useRoute()
-const { allShows, pending } = useShows()
-
 const slugParam = computed(() => String(route.params.slug))
 
-const cachedShow = computed(() => {
-  return allShows.value.find((s) => s.slug === slugParam.value || String(s.id) === slugParam.value)
-})
-
-const shouldFetch = computed(() => !cachedShow.value && Boolean(slugParam.value))
-
-const fetchShow = async () => {
-  if (!shouldFetch.value) return null
-  try {
-    return await $fetch(`/api/shows/${encodeURIComponent(slugParam.value)}`)
-  } catch (err) {
-    console.error('Failed to fetch show:', err)
-    return null
-  }
-}
-
-const { data: fetchedShow, pending: fetching } = useAsyncData(fetchShow, {
-  key: () => `show-detail-${slugParam.value}`,
-  watch: [slugParam],
-  default: () => null,
-})
-
-const show = computed(() => cachedShow.value || fetchedShow.value)
-
-const isLoading = computed(() => (pending.value || fetching.value) && !show.value)
+const { show, isLoading, summaryText, detailGenres, cast, castCount, episodeCount } =
+  useShowDetail(slugParam)
 const posterError = ref(false)
-
-const handlePosterError = () => {
+const handlePosterErrorWithLog = () => {
+  console.warn(`Failed to load poster image for show: ${show.value?.title || 'Unknown'}`)
   posterError.value = true
-  console.warn(`Failed to load poster image for show: ${show.value?.title}`)
 }
-
-watch(show, () => {
-  posterError.value = false
-})
-
-const showId = computed(() => show.value?.id)
-
-const { data: cast, error: castError } = useAsyncData(
-  () => `cast-${showId.value}`,
-  () => (showId.value ? $fetch(`/api/shows/${showId.value}/cast`) : []),
-  { watch: [showId] }
-)
-
-// Log cast errors but don't show them to users (cast is supplementary data)
-watch(castError, (error) => {
-  if (error) {
-    console.error('Failed to load cast data:', error)
-  }
-})
-
-const showTitle = computed(() =>
-  show.value ? `${show.value.title} - TV Shows Dashboard` : 'Show Not Found'
-)
-
-const showDescription = computed(() => {
-  if (!show.value) {
-    return 'Show not found on TV Shows Dashboard.'
-  }
-
-  const year = show.value.year ? ` (${show.value.year})` : ''
-  const rating = show.value.rating != null ? ` Rated ${show.value.rating}/10.` : ''
-
-  return `${show.value.title}${year} on TV Shows Dashboard.${rating}`
-})
-
-const summaryText = computed(() => {
-  return show.value?.summary || ''
-})
-
-const detailGenres = computed(() => show.value?.genres || [])
-const castCount = computed(() => cast.value?.length || 0)
-const episodeCount = computed(() => 5)
+watch(show, () => (posterError.value = false))
 
 useSeoMeta({
-  title: () => showTitle.value,
-  description: () => showDescription.value,
-  ogTitle: () => showTitle.value,
-  ogDescription: () => showDescription.value,
+  title: () => (show.value ? `${show.value.title} - TV Shows Dashboard` : 'Show Not Found'),
+  description: () =>
+    show.value
+      ? `${show.value.title}${show.value.year ? ` (${show.value.year})` : ''}.`
+      : 'Show not found.',
 })
 </script>
 

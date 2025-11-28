@@ -19,7 +19,7 @@
       </div>
     </section>
     <section class="container search-results" aria-live="polite" aria-labelledby="search-results-heading">
-      <h2 id="search-results-heading" class="search-results__heading">Search results</h2>
+      <h2 id="search-results-heading" class="sr-only">Search results</h2>
       <div
         v-if="searchState !== 'results'"
         class="search-results__state"
@@ -169,14 +169,6 @@ useSeoMeta({
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.search-results__heading {
-  margin: 0;
-  font-size: 20px;
-  line-height: 1.4;
-  letter-spacing: var(--tracking-heading);
-  color: var(--color-ink);
 }
 
 .search-results__grid {

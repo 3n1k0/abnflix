@@ -85,10 +85,6 @@
 
   /* Transitions */
   --transition-fast: 0.15s ease;
-  --transition-base: 0.3s ease;
-
-  /* Breakpoints (for reference in media queries) */
-  --breakpoint-mobile: 640px;
 
   /* Component dimensions */
   --card-width: 192px;

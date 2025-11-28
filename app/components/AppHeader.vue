@@ -60,9 +60,6 @@
 }
 
 .nav-link {
-  border: none;
-  background: none;
-  padding: 0;
   color: var(--color-muted);
   font-size: var(--text-base);
   line-height: 1.5;
@@ -78,7 +75,6 @@
 
 @media (max-width: 640px) {
   .header-inner {
-    height: auto;
     gap: 16px;
   }
 
