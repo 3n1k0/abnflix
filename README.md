@@ -1,75 +1,65 @@
-# Nuxt Minimal Starter
+# TV Shows Dashboard
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Nuxt 4 / Vue 3 single-page app that browses TVMaze shows by genre, highlights the highest-rated titles per genre, provides search, and shows detail pages with cast.
 
-## Setup
+## Stack & Architecture
 
-Make sure to install dependencies:
+- **Framework**: Nuxt 4 (Vue 3, Vite) for file-based routing, SSR/ISR caching, and composables.
+- **Styling**: Hand-rolled CSS with design tokens, minimal dependencies.
+- **Data**: Server endpoints in `server/api` wrap the public TVMaze API. Shows are fetched server-side, bucketed by genre, sorted by rating, and cached.
+- **Images**: `@nuxt/image` for responsive posters/placeholders.
+- **Tests**: Vitest + Vue Test Utils covering core components/pages.
+
+## Requirements Coverage
+
+- **Genres + ratings**: `/api/shows` aggregates all TVMaze pages and returns top-rated shows per genre (sorted then trimmed).
+- **Detail view**: `/shows/[slug]` fetches show detail and cast via API routes.
+- **Search**: `/search` uses debounced queries against `/api/search`.
+- **Responsiveness**: Layouts adapt down to mobile, horizontal scroll lists use scroll buttons.
+- **Clean code**: Components are small, props-driven, composables encapsulate data fetching and UI logic.
+
+## Getting Started
+
+- Node: v22.19.0 tested (LTS-compatible). NPM: comes with Node.
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Visit http://localhost:3000.
 
-Build the application for production:
+## Scripts
+
+- `npm run dev` – start dev server
+- `npm run build` – production build
+- `npm run preview` – preview production build
+- `npm test` – Vitest unit tests (jsdom)
+- `npm run lint` – ESLint
+- `npm run format` – Prettier write
+
+## API Routes (server-side)
+
+- `GET /api/shows` – returns genre buckets, sorted by rating (cached 1h)
+- `GET /api/shows/:id` – show detail by id/slug with fallbacks (cached 1h)
+- `GET /api/shows/:id/cast` – cast list (cached 1h)
+- `GET /api/search?q=` – search shows
+
+## Notes / Decisions
+
+- Capped pages and genres to balance coverage with API load (`MAX_PAGES`, `MAX_GENRES`, `SHOWS_PER_GENRE` in `server/api/shows.get.ts`).
+- Strip HTML from TVMaze summaries for clean text.
+- Debounced search to reduce API chatter; minimum 2 chars.
+- Horizontal lists use a composable for scroll state and smooth scroll.
+
+## Testing
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+npm test
 ```
 
-Locally preview production build:
+## Limitations / Future Work
 
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- Episodes tab is a stub, TVMaze episode data can be added similarly to cast.
+- “View All” could deep link to a genre page.
+- Consider persistence for “My List” if expanding features.

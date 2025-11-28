@@ -2,12 +2,11 @@ import type { GenreBucket, ShowItem, ShowsResponse, TvMazeShow } from '../../typ
 import { sortShowsByRating, transformShow } from '../utils/shows'
 
 const SHOWS_PER_GENRE = 10
-const MAX_PAGES = 50
-const MAX_GENRES = 4
+const MAX_PAGES = 200
+const MAX_GENRES = 8
 
 export default cachedEventHandler(
   async () => {
-    const genreList: string[] = []
     const buckets: Record<string, ShowItem[]> = {}
 
     let page = 0
@@ -26,29 +25,28 @@ export default cachedEventHandler(
           for (const genre of show.genres) {
             if (!genre) continue
 
-            if (!genreList.includes(genre)) genreList.push(genre)
-            if (genreList.indexOf(genre) >= MAX_GENRES) continue
-
             const bucket = buckets[genre] || (buckets[genre] = [])
-            if (bucket.length < SHOWS_PER_GENRE) {
-              bucket.push(transformShow(show))
-            }
+            bucket.push(transformShow(show))
           }
         }
 
         page++
       }
 
-      const selected = genreList.slice(0, MAX_GENRES)
+      const allGenres = Object.keys(buckets)
+
+      const selected = allGenres
+        .sort((a, b) => (buckets[b]?.length || 0) - (buckets[a]?.length || 0))
+        .slice(0, MAX_GENRES)
 
       const genres: GenreBucket[] = selected.map((name) => ({
         name,
-        shows: sortShowsByRating(buckets[name] || []),
+        shows: sortShowsByRating(buckets[name] || []).slice(0, SHOWS_PER_GENRE),
       }))
 
       return {
         genres,
-        totalGenres: genreList.length,
+        totalGenres: allGenres.length,
       } satisfies ShowsResponse
     } catch (err) {
       console.error('TVMaze fetch failed:', err)
