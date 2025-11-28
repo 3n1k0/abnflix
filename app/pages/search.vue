@@ -11,23 +11,16 @@
             Look up titles across every genre and language. We surface the best matches instantly.
           </p>
         </div>
-        <HeroSearch v-model="searchInput" @search="handleSearch" />
+        <HeroSearch v-model="searchInput" />
 
         <p class="search-hero__hint" aria-live="polite">
-          <span v-show="!hasQuery">Try "The Office", "Game of Thrones", or "Stranger Things".</span>
-          <span v-show="hasResults">{{ results.length }} results for "{{ trimmedQuery }}"</span>
-          <span v-show="hasQuery && !hasResults">No matches for "{{ trimmedQuery }}" yet.</span>
+          {{ hintMessage }}
         </p>
       </div>
     </section>
     <section class="container search-results" aria-live="polite">
-      <div v-show="error" class="search-results__state search-results__state--error" role="alert">
-        <p>We couldn't search right now. Please try again.</p>
-      </div>
-      <div v-show="!error && !hasQuery" class="search-results__state">
-        <p>Start typing a show name to see matches.</p>
-      </div>
-      <ul v-show="!error && hasQuery && hasResults" class="search-results__grid" role="list">
+      <SearchResultsState :state="searchState" :query="trimmedQuery" />
+      <ul v-if="searchState === 'results'" class="search-results__grid" role="list">
         <li
           v-for="(show, index) in results"
           :key="show.id ?? `${show.title}-${index}`"
@@ -45,9 +38,6 @@
           />
         </li>
       </ul>
-      <div v-show="!error && hasQuery && !hasResults" class="search-results__state">
-        <p>No shows found for "{{ trimmedQuery }}".</p>
-      </div>
     </section>
   </main>
 </template>
@@ -78,10 +68,18 @@ const searchInput = computed({
 // Plug into your composable
 const { results, error, hasQuery, hasResults, trimmedQuery } = useShowSearch(searchInput)
 
-const handleSearch = (value) => {
-  const normalized = value.trim()
-  router.replace({ path: '/search', query: normalized ? { q: normalized } : {} })
-}
+const searchState = computed(() => {
+  if (error.value) return 'error'
+  if (!hasQuery.value) return 'idle'
+  if (hasResults.value) return 'results'
+  return 'no-results'
+})
+
+const hintMessage = computed(() => {
+  if (!hasQuery.value) return 'Try "The Office", "Game of Thrones", or "Stranger Things".'
+  if (hasResults.value) return `${results.value.length} results for "${trimmedQuery.value}"`
+  return `No matches for "${trimmedQuery.value}" yet.`
+})
 
 useSeoMeta({
   title: 'Search TV Shows',
@@ -171,21 +169,6 @@ useSeoMeta({
 
 .search-results__item {
   list-style: none;
-}
-
-.search-results__state {
-  padding: 40px 16px;
-  background: var(--color-bg-white);
-  border: 1px solid var(--color-border-soft);
-  border-radius: var(--radius-md);
-  text-align: center;
-  color: var(--color-muted);
-  box-shadow: var(--shadow-card);
-}
-
-.search-results__state--error {
-  color: #b91c1c;
-  border-color: rgba(185, 28, 28, 0.25);
 }
 
 @media (max-width: 640px) {

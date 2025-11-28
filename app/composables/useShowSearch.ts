@@ -11,9 +11,10 @@ export function useShowSearch(initialQuery: string | Ref<string> = '') {
   const trimmed = computed(() => query.value.trim())
   const meaningful = computed(() => trimmed.value.length >= MIN_QUERY_LENGTH)
 
-  const debounced = ref(trimmed.value)
+  const debounced = ref('')
 
   let timer = null as ReturnType<typeof setTimeout> | null
+  let isFirstRun = true
 
   watch(
     trimmed,
@@ -27,16 +28,24 @@ export function useShowSearch(initialQuery: string | Ref<string> = '') {
         return
       }
 
+      // On first run, set immediately without debounce if we have a meaningful query
+      if (isFirstRun) {
+        isFirstRun = false
+        debounced.value = value
+        return
+      }
+
+      // For subsequent changes, apply debounce
       timer = setTimeout(() => {
         debounced.value = value
       }, DEBOUNCE_MS)
     },
-    { flush: 'post' }
+    { immediate: true, flush: 'post' }
   )
 
   const hasQuery = computed(() => debounced.value.length >= MIN_QUERY_LENGTH)
 
-  const ssrKey = computed(() => `search-${trimmed.value}`)
+  const ssrKey = computed(() => `search-${debounced.value}`)
 
   const {
     data: results,
