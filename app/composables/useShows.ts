@@ -7,6 +7,7 @@ export function useShows() {
     data: rawShows,
     pending,
     error,
+    refresh,
   } = useAsyncData<ShowsResponse>('shows-v4', () => $fetch('/api/shows?v=4'))
 
   const genres = computed(() => rawShows.value?.genres || [])
@@ -17,6 +18,7 @@ export function useShows() {
     rawShows,
     pending,
     error,
+    refresh,
     genres,
     totalGenres,
     allShows,

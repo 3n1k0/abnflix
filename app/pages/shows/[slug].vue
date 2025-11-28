@@ -4,8 +4,13 @@
       <BackButton />
       <div v-if="show" class="show-detail__content">
         <div class="show-detail__poster" :class="{ 'is-loading': !posterLoaded }">
-          <div v-if="!posterLoaded" class="skeleton skeleton--poster" aria-hidden="true" />
+          <div v-if="!posterLoaded && !posterError" class="skeleton skeleton--poster" aria-hidden="true" />
+          <div v-if="posterError" class="poster-error">
+            <div class="poster-error__icon">📺</div>
+            <div class="poster-error__text">Image unavailable</div>
+          </div>
           <NuxtImg
+            v-else
             :src="show.imageFullSrc || show.imageSrc"
             :alt="show.alt || `${show.title} poster`"
             width="400"
@@ -17,6 +22,7 @@
             decoding="async"
             sizes="(max-width: 640px) 80vw, 400px"
             @load="posterLoaded = true"
+            @error="handlePosterError"
           />
           <RatingBadge
             v-if="show.rating != null"
@@ -82,17 +88,33 @@ const show = computed(() => cachedShow.value || fetchedShow.value)
 
 const isLoading = computed(() => (pending.value || fetching.value) && !show.value)
 const posterLoaded = ref(false)
+const posterError = ref(false)
+
+const handlePosterError = () => {
+  posterError.value = true
+  posterLoaded.value = true
+  console.warn(`Failed to load poster image for show: ${show.value?.title}`)
+}
+
 watch(show, () => {
   posterLoaded.value = false
+  posterError.value = false
 })
 
 const showId = computed(() => show.value?.id)
 
-const { data: cast } = useAsyncData(
+const { data: cast, error: castError } = useAsyncData(
   () => `cast-${showId.value}`,
   () => (showId.value ? $fetch(`/api/shows/${showId.value}/cast`) : []),
   { watch: [showId] }
 )
+
+// Log cast errors but don't show them to users (cast is supplementary data)
+watch(castError, (error) => {
+  if (error) {
+    console.error('Failed to load cast data:', error)
+  }
+})
 
 const showTitle = computed(() =>
   show.value ? `${show.value.title} - TV Shows Dashboard` : 'Show Not Found'
@@ -161,6 +183,28 @@ useSeoMeta({
 
 .show-detail__poster.is-loading img {
   opacity: 0;
+}
+
+.poster-error {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(255, 251, 235, 0.8), rgba(248, 250, 252, 0.8));
+}
+
+.poster-error__icon {
+  font-size: 64px;
+  opacity: 0.4;
+}
+
+.poster-error__text {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  opacity: 0.6;
 }
 
 .show-detail__rating {

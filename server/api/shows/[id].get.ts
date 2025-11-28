@@ -19,6 +19,7 @@ export default cachedEventHandler(
         )
         if (response) return transformShow(response)
       } catch (err) {
+        console.warn(`Failed to fetch show by numeric ID ${numericId}:`, err)
         // fall through to slug handling
       }
     }
@@ -37,9 +38,11 @@ export default cachedEventHandler(
         )
 
         if (single) {
+          console.log(`Found show via singlesearch for slug "${id}" with variant "${variant}"`)
           return transformShow(single)
         }
       } catch (err) {
+        console.debug(`Singlesearch failed for variant "${variant}":`, err)
         // continue to next variant
       }
     }
@@ -61,18 +64,24 @@ export default cachedEventHandler(
           })
 
           if (match?.show) {
+            console.log(`Found exact match for slug "${id}" via search with variant "${variant}"`)
             return transformShow(match.show)
           }
 
           if (searchResults[0]?.show) {
+            console.log(
+              `Found fuzzy match for slug "${id}" via search with variant "${variant}": ${searchResults[0].show.name}`
+            )
             return transformShow(searchResults[0].show)
           }
         }
       } catch (err) {
+        console.debug(`Search failed for variant "${variant}":`, err)
         // continue to next variant
       }
     }
 
+    console.warn(`Show not found after exhausting all search methods for: "${id}"`)
     throw createError({ statusCode: 404, statusMessage: 'Show not found' })
   },
   {

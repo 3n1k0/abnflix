@@ -53,52 +53,73 @@ export default cachedEventHandler(
 
     let page = 0
 
-    while (page < MAX_PAGES) {
-      const response = await $fetch<TvMazeShow[]>(`https://api.tvmaze.com/shows?page=${page}`)
+    try {
+      while (page < MAX_PAGES) {
+        try {
+          const response = await $fetch<TvMazeShow[]>(`https://api.tvmaze.com/shows?page=${page}`)
 
-      if (!Array.isArray(response) || response.length === 0) {
-        break
-      }
-
-      for (const show of response) {
-        if (!show.genres?.length) continue
-
-        for (const genre of show.genres) {
-          if (!genre) continue
-
-          if (!allGenres.has(genre)) {
-            allGenres.add(genre)
-            genreOrder.push(genre)
+          if (!Array.isArray(response) || response.length === 0) {
+            break
           }
 
-          if (genreOrder.indexOf(genre) >= MAX_GENRES) {
-            continue
+          for (const show of response) {
+            if (!show.genres?.length) continue
+
+            for (const genre of show.genres) {
+              if (!genre) continue
+
+              if (!allGenres.has(genre)) {
+                allGenres.add(genre)
+                genreOrder.push(genre)
+              }
+
+              if (genreOrder.indexOf(genre) >= MAX_GENRES) {
+                continue
+              }
+
+              const bucket = buckets[genre] || (buckets[genre] = [])
+
+              if (bucket.length < SHOWS_PER_GENRE) {
+                bucket.push(transformShow(show))
+              }
+            }
           }
 
-          const bucket = buckets[genre] || (buckets[genre] = [])
+          page++
+        } catch (pageError) {
+          console.error(`Failed to fetch page ${page} from TVMaze API:`, pageError)
 
-          if (bucket.length < SHOWS_PER_GENRE) {
-            bucket.push(transformShow(show))
+          if (page > 0) {
+            console.warn(`Returning partial data from ${page} pages`)
+            break
           }
+
+          throw pageError
         }
       }
 
-      page++
+      const selectedGenres = genreOrder.slice(0, MAX_GENRES)
+
+      const genres: GenreBucket[] = selectedGenres.map((name) => ({
+        name,
+        shows: sortByRating(buckets[name] || []),
+      }))
+
+      const payload: ShowsResponse = {
+        genres,
+        totalGenres: allGenres.size,
+      }
+
+      return payload
+    } catch (error) {
+      console.error('Failed to fetch shows from TVMaze API:', error)
+
+      throw createError({
+        statusCode: 503,
+        statusMessage: 'Service Unavailable',
+        message: 'Failed to fetch shows from external API. Please try again later.',
+      })
     }
-
-    const selectedGenres = genreOrder.slice(0, MAX_GENRES)
-
-    const genres: GenreBucket[] = selectedGenres.map((name) => ({
-      name,
-      shows: sortByRating(buckets[name] || []),
-    }))
-
-    const payload: ShowsResponse = {
-      genres,
-      totalGenres: allGenres.size,
-    }
-
-    return payload
   },
   {
     maxAge: 60 * 60,

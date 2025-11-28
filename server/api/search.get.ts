@@ -15,17 +15,27 @@ export default cachedEventHandler(
       throw createError({ statusCode: 400, statusMessage: 'Query parameter "q" is required' })
     }
 
-    const response = await $fetch<TvMazeSearchResult[]>(
-      `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`
-    )
+    try {
+      const response = await $fetch<TvMazeSearchResult[]>(
+        `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`
+      )
 
-    if (!Array.isArray(response)) return []
+      if (!Array.isArray(response)) return []
 
-    const results: ShowItem[] = response
-      .map((entry) => (entry.show ? transformShow(entry.show) : null))
-      .filter((show): show is ShowItem => Boolean(show))
+      const results: ShowItem[] = response
+        .map((entry) => (entry.show ? transformShow(entry.show) : null))
+        .filter((show): show is ShowItem => Boolean(show))
 
-    return results
+      return results
+    } catch (error) {
+      console.error('Failed to search shows from TVMaze API:', error)
+
+      throw createError({
+        statusCode: 503,
+        statusMessage: 'Service Unavailable',
+        message: 'Failed to search shows from external API. Please try again later.',
+      })
+    }
   },
   {
     maxAge: 15 * 60,

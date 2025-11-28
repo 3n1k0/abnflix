@@ -2,7 +2,12 @@
   <NuxtLink :to="`/shows/${slug || id}`" class="show-card-link">
     <article class="show-card">
       <div class="show-card__media">
+        <div v-if="imageError" class="show-card__placeholder">
+          <div class="placeholder-icon">📺</div>
+          <span class="placeholder-text">No Image</span>
+        </div>
         <NuxtImg
+          v-else
           :src="imageSrc"
           :alt="alt || `${title} poster`"
           :loading="eagerLoad || fetchPriority === 'high' ? 'eager' : 'lazy'"
@@ -14,6 +19,7 @@
           fit="cover"
           decoding="async"
           sizes="(max-width: 640px) 70vw, 192px"
+          @error="handleImageError"
         />
 
         <RatingBadge v-if="rating != null" class="show-card__rating" :value="rating" />
@@ -28,7 +34,14 @@
 <script setup>
 import RatingBadge from './RatingBadge.vue'
 
-defineProps({
+const imageError = ref(false)
+
+const handleImageError = () => {
+  imageError.value = true
+  console.warn(`Failed to load image for show: ${props.title}`)
+}
+
+const props = defineProps({
   id: {
     type: [String, Number],
     required: true,
@@ -111,6 +124,28 @@ defineProps({
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.show-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(255, 251, 235, 0.8), rgba(248, 250, 252, 0.8));
+}
+
+.placeholder-icon {
+  font-size: 48px;
+  opacity: 0.4;
+}
+
+.placeholder-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  opacity: 0.6;
 }
 
 .show-card__rating {

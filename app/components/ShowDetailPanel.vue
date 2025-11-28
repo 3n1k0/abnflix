@@ -47,13 +47,14 @@
             <div v-for="member in visibleCast" :key="member.id" class="detail-card__cast-row">
               <div class="detail-card__cast-avatar" aria-hidden="true">
                 <NuxtImg
-                  v-if="member.image"
+                  v-if="member.image && !castImageErrors[member.id]"
                   :src="member.image"
                   alt=""
                   width="48"
                   height="48"
                   format="webp"
                   quality="70"
+                  @error="handleCastImageError(member.id, member.name)"
                 />
                 <div v-else class="detail-card__cast-placeholder">{{ member.name[0] }}</div>
               </div>
@@ -81,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, reactive } from 'vue'
 import type { ShowItem, CastMember } from '../../types/shows'
 import StarIcon from './icons/StarIcon.vue'
 
@@ -97,6 +98,12 @@ const props = defineProps<{
 }>()
 
 const activeTab = ref<TabKey>('summary')
+const castImageErrors = reactive<Record<number, boolean>>({})
+
+const handleCastImageError = (memberId: number, memberName: string) => {
+  castImageErrors[memberId] = true
+  console.warn(`Failed to load cast image for: ${memberName}`)
+}
 
 const title = computed(() => props.show?.title || 'Untitled')
 const year = computed(() => props.show?.year ?? '')
