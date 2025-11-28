@@ -45,7 +45,7 @@
         >
           <ShowCard
             :id="show.id || `${show.title}-${index}`"
-            :slug="show.slug"
+            :slug="show.slug || show.id"
             :title="show.title"
             :year="show.year"
             :rating="show.rating"

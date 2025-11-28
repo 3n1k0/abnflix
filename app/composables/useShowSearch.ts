@@ -2,13 +2,47 @@ import { ref, computed, watch, isRef, type Ref } from 'vue'
 import { useAsyncData } from 'nuxt/app'
 import type { ShowItem } from '../../types/shows'
 
+const MIN_QUERY_LENGTH = 2
+const DEBOUNCE_MS = 250
+
+function normalizeQuery(value: string) {
+  return value.replace(/\s+/g, ' ').trim()
+}
+
+function isMeaningfulQuery(value: string) {
+  return value.length >= MIN_QUERY_LENGTH && /[a-zA-Z0-9]/.test(value)
+}
+
 export function useShowSearch(initialQuery: string | Ref<string> = '') {
   const query = isRef(initialQuery) ? initialQuery : ref(initialQuery)
-  const trimmedQuery = computed(() => query.value.trim())
-  const hasQuery = computed(() => trimmedQuery.value.length > 0)
+  const trimmedQuery = computed(() => normalizeQuery(query.value))
+  const meetsMinLength = computed(() => isMeaningfulQuery(trimmedQuery.value))
+
+  const debouncedQuery = ref('')
+  const lastQueried = ref('')
+  let debounceHandle: ReturnType<typeof setTimeout> | undefined
+
+  watch(
+    trimmedQuery,
+    (value) => {
+      if (debounceHandle) clearTimeout(debounceHandle)
+
+      if (!isMeaningfulQuery(value)) {
+        debouncedQuery.value = ''
+        return
+      }
+
+      debounceHandle = setTimeout(() => {
+        debouncedQuery.value = value
+      }, DEBOUNCE_MS)
+    },
+    { immediate: true }
+  )
+
+  const hasQuery = computed(() => debouncedQuery.value.length >= MIN_QUERY_LENGTH)
 
   const searchKey = computed(() =>
-    hasQuery.value ? `search-shows-${trimmedQuery.value}` : 'search-shows-empty'
+    hasQuery.value ? `search-shows-${debouncedQuery.value}` : 'search-shows-empty'
   )
 
   const {
@@ -20,7 +54,7 @@ export function useShowSearch(initialQuery: string | Ref<string> = '') {
     searchKey,
     async () => {
       if (!hasQuery.value) return []
-      return $fetch(`/api/search?q=${encodeURIComponent(trimmedQuery.value)}`)
+      return $fetch(`/api/search?q=${encodeURIComponent(debouncedQuery.value)}`)
     },
     {
       default: () => [],
@@ -29,13 +63,19 @@ export function useShowSearch(initialQuery: string | Ref<string> = '') {
   )
 
   watch(
-    trimmedQuery,
+    debouncedQuery,
     async (value) => {
-      if (!value) {
+      if (!isMeaningfulQuery(value)) {
         results.value = []
+        lastQueried.value = ''
         return
       }
 
+      if (value === lastQueried.value) {
+        return
+      }
+
+      lastQueried.value = value
       await refresh()
     },
     { immediate: true }
@@ -46,7 +86,9 @@ export function useShowSearch(initialQuery: string | Ref<string> = '') {
   return {
     query,
     trimmedQuery,
+    debouncedQuery,
     hasQuery,
+    meetsMinLength,
     results,
     pending,
     error,

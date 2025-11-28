@@ -53,13 +53,34 @@
 const route = useRoute()
 const { allShows, pending } = useShows()
 
-const show = computed(() => {
-  const slugParam = String(route.params.slug)
+const slugParam = computed(() => String(route.params.slug))
 
-  return allShows.value.find((s) => s.slug === slugParam || String(s.id) === slugParam)
+const cachedShow = computed(() => {
+  return allShows.value.find(
+    (s) => s.slug === slugParam.value || String(s.id) === slugParam.value
+  )
 })
 
-const isLoading = computed(() => pending.value && !show.value)
+const shouldFetch = computed(() => !cachedShow.value && Boolean(slugParam.value))
+
+const fetchShow = async () => {
+  if (!shouldFetch.value) return null
+  try {
+    return await $fetch(`/api/shows/${encodeURIComponent(slugParam.value)}`)
+  } catch (err) {
+    return null
+  }
+}
+
+const { data: fetchedShow, pending: fetching } = useAsyncData(fetchShow, {
+  key: () => `show-detail-${slugParam.value}`,
+  watch: [slugParam],
+  default: () => null,
+})
+
+const show = computed(() => cachedShow.value || fetchedShow.value)
+
+const isLoading = computed(() => (pending.value || fetching.value) && !show.value)
 const posterLoaded = ref(false)
 watch(show, () => {
   posterLoaded.value = false
