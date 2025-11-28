@@ -14,7 +14,6 @@
         :class="{ 'is-hidden': !canScrollPrev }"
         aria-label="Scroll shows backward"
         :aria-disabled="!canScrollPrev"
-        tabindex="-1"
         @click="scrollPrev"
       >
         <ChevronLeftIcon />
@@ -44,10 +43,8 @@
       <button
         type="button"
         class="show-list__scroll show-list__scroll--next"
-        :class="{ 'is-hidden': !canScrollNext }"
         aria-label="Scroll shows forward"
         :aria-disabled="!canScrollNext"
-        tabindex="-1"
         @click="scrollNext"
       >
         <ChevronRightIcon />
@@ -172,7 +169,7 @@ const { canScrollPrev, canScrollNext, scrollPrev, scrollNext } = useHorizontalSc
   flex-shrink: 0;
 }
 
-.show-list__scroll.is-hidden {
+.show-list__scroll--prev.is-hidden {
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
