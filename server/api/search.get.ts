@@ -8,36 +8,31 @@ interface TvMazeSearchResult {
 
 export default cachedEventHandler(
   async (event) => {
-    const queryParam = getQuery(event).q
-    const query = typeof queryParam === 'string' ? queryParam.trim() : ''
+    const q = getQuery(event).q
+    const query = typeof q === 'string' ? q.trim() : ''
 
     if (!query) {
       throw createError({ statusCode: 400, statusMessage: 'Query parameter "q" is required' })
     }
 
     try {
-      const response = await $fetch<TvMazeSearchResult[]>(
-        `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`
+      const data = await $fetch<TvMazeSearchResult[]>(
+        `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`,
+        { ignoreResponseError: true }
       )
 
-      if (!Array.isArray(response)) return []
+      if (!Array.isArray(data)) return []
 
-      const results: ShowItem[] = response
-        .map((entry) => (entry.show ? transformShow(entry.show) : null))
-        .filter((show): show is ShowItem => Boolean(show))
-
-      return results
-    } catch (error) {
-      console.error('Failed to search shows from TVMaze API:', error)
-
+      return data
+        .map((item) => (item.show ? transformShow(item.show) : null))
+        .filter(Boolean) as ShowItem[]
+    } catch (err) {
+      console.error('Search request failed:', err)
       throw createError({
         statusCode: 503,
         statusMessage: 'Service Unavailable',
-        message: 'Failed to search shows from external API. Please try again later.',
       })
     }
   },
-  {
-    maxAge: 15 * 60,
-  }
+  { maxAge: 15 * 60 }
 )

@@ -5,7 +5,3 @@
     <AppFooter />
   </div>
 </template>
-
-<script setup>
-// CSS is imported via nuxt.config.ts
-</script>

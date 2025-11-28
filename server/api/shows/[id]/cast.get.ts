@@ -14,51 +14,35 @@ interface TvMazeCastResponseItem {
 export default cachedEventHandler(
   async (event) => {
     const id = getRouterParam(event, 'id')
-
     if (!id) {
       throw createError({ statusCode: 400, statusMessage: 'Show id is required' })
     }
 
     try {
-      const response = await $fetch<TvMazeCastResponseItem[]>(
-        `https://api.tvmaze.com/shows/${id}/cast`
+      const data = await $fetch<TvMazeCastResponseItem[]>(
+        `https://api.tvmaze.com/shows/${id}/cast`,
+        { ignoreResponseError: true }
       )
 
-      if (!Array.isArray(response)) return []
+      if (!Array.isArray(data)) return []
 
-      const cast: CastMember[] = response
-        .map((item) => {
-          const personId = item.person?.id
-          const name = item.person?.name?.trim()
-          const character = item.character?.name?.trim()
+      return data
+        .map((item): CastMember | null => {
+          const p = item.person
+          if (!p?.id || !p.name) return null
 
-          if (!personId || !name) return null
-
-          const castMember: CastMember = {
-            id: personId,
-            name,
-            character: character || 'Unknown role',
+          return {
+            id: p.id,
+            name: p.name.trim(),
+            character: item.character?.name?.trim() || 'Unknown role',
+            image: p.image?.original || p.image?.medium || undefined,
           }
-
-          const imageUrl = item.person?.image?.original || item.person?.image?.medium
-          if (imageUrl) {
-            castMember.image = imageUrl
-          }
-
-          return castMember
         })
-        .filter((entry): entry is CastMember => Boolean(entry))
-
-      return cast
-    } catch (error) {
-      console.error(`Failed to fetch cast for show ${id} from TVMaze API:`, error)
-
-      // Return empty array for graceful degradation
-      // Cast data is supplementary, so the show page can still function without it
+        .filter(Boolean) as CastMember[]
+    } catch (err) {
+      console.error(`Cast fetch failed for show ${id}:`, err)
       return []
     }
   },
-  {
-    maxAge: 60 * 60,
-  }
+  { maxAge: 60 * 60 }
 )
