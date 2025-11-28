@@ -2,8 +2,8 @@ import type { ShowItem, TvMazeShow } from '../../types/shows'
 
 export function sortShowsByRating(shows: ShowItem[]): ShowItem[] {
   return [...shows].sort((a, b) => {
-    const ra = typeof a.rating === 'number' ? a.rating : -1
-    const rb = typeof b.rating === 'number' ? b.rating : -1
+    const ra = typeof a.rating === 'number' ? a.rating : parseFloat(String(a.rating)) || -1
+    const rb = typeof b.rating === 'number' ? b.rating : parseFloat(String(b.rating)) || -1
     return rb !== ra ? rb - ra : (a.title || '').localeCompare(b.title || '')
   })
 }

@@ -19,7 +19,14 @@
       </div>
     </section>
     <section class="container search-results" aria-live="polite">
-      <SearchResultsState :state="searchState" :query="trimmedQuery" />
+      <div
+        v-if="searchState !== 'results'"
+        class="search-results__state"
+        :class="{ 'search-results__state--error': searchState === 'error' }"
+        :role="searchState === 'error' ? 'alert' : undefined"
+      >
+        <p>{{ stateMessage }}</p>
+      </div>
       <ul v-if="searchState === 'results'" class="search-results__grid" role="list">
         <li
           v-for="(show, index) in results"
@@ -79,6 +86,19 @@ const hintMessage = computed(() => {
   if (!hasQuery.value) return 'Try "The Office", "Game of Thrones", or "Stranger Things".'
   if (hasResults.value) return `${results.value.length} results for "${trimmedQuery.value}"`
   return `No matches for "${trimmedQuery.value}" yet.`
+})
+
+const stateMessage = computed(() => {
+  switch (searchState.value) {
+    case 'error':
+      return "We couldn't search right now. Please try again."
+    case 'idle':
+      return 'Start typing a show name to see matches.'
+    case 'no-results':
+      return `No shows found for "${trimmedQuery.value}".`
+    default:
+      return ''
+  }
 })
 
 useSeoMeta({
@@ -169,6 +189,25 @@ useSeoMeta({
 
 .search-results__item {
   list-style: none;
+}
+
+.search-results__state {
+  padding: 40px 16px;
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--color-muted);
+  box-shadow: var(--shadow-card);
+}
+
+.search-results__state--error {
+  color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.25);
+}
+
+.search-results__state p {
+  margin: 0;
 }
 
 @media (max-width: 640px) {

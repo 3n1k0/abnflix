@@ -1,34 +1,9 @@
 import type { GenreBucket, ShowItem, ShowsResponse, TvMazeShow } from '../../types/shows'
+import { sortShowsByRating, transformShow } from '../utils/shows'
 
 const SHOWS_PER_GENRE = 10
 const MAX_PAGES = 50
 const MAX_GENRES = 4
-
-function sortByRating(list: ShowItem[]): ShowItem[] {
-  return [...list].sort((a, b) => {
-    const ra = typeof a.rating === 'number' ? a.rating : parseFloat(String(a.rating)) || -1
-    const rb = typeof b.rating === 'number' ? b.rating : parseFloat(String(b.rating)) || -1
-    return rb !== ra ? rb - ra : (a.title || '').localeCompare(b.title || '')
-  })
-}
-
-function transformShow(show: TvMazeShow): ShowItem {
-  const clean = show.summary?.replace(/<[^>]+>/g, '').trim()
-
-  return {
-    id: show.id,
-    slug: show.url?.split('/').pop() || String(show.id),
-    title: show.name,
-    year: show.premiered ? new Date(show.premiered).getFullYear() : undefined,
-    rating: show.rating?.average || null,
-    imageSrc: show.image?.medium || show.image?.original || undefined,
-    imageFullSrc: show.image?.original || show.image?.medium || undefined,
-    language: show.language || undefined,
-    summary: clean || undefined,
-    url: show.url,
-    genres: show.genres || [],
-  }
-}
 
 export default cachedEventHandler(
   async () => {
@@ -68,7 +43,7 @@ export default cachedEventHandler(
 
       const genres: GenreBucket[] = selected.map((name) => ({
         name,
-        shows: sortByRating(buckets[name] || []),
+        shows: sortShowsByRating(buckets[name] || []),
       }))
 
       return {
