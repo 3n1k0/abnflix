@@ -54,11 +54,9 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
 import ChevronLeftIcon from './icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from './icons/ChevronRightIcon.vue'
 import ShowCard from './ShowCard.vue'
-import { useHorizontalScroller } from '~/composables/useHorizontalScroller'
 
 const emit = defineEmits(['view-all'])
 

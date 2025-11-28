@@ -82,7 +82,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, reactive } from 'vue'
 import type { ShowItem, CastMember } from '../../types/shows'
 import StarIcon from './icons/StarIcon.vue'
 

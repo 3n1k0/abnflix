@@ -1,7 +1,7 @@
 <template>
   <header class="app-header">
     <div class="header-inner container">
-      <a class="brand" href="#" aria-label="TV Shows home">
+      <a class="brand" href="/" aria-label="TV Shows home">
         <TvLogoIcon class="brand-icon" aria-hidden="true" />
         <span class="brand-label">TV Shows</span>
       </a>

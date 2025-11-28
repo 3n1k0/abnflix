@@ -18,7 +18,7 @@ describe('AppHeader', () => {
     const brandLink = wrapper.get('a.brand')
     expect(brandLink.text()).toContain('TV Shows')
     expect(brandLink.attributes('aria-label')).toBe('TV Shows home')
-    expect(brandLink.attributes('href')).toBe('#')
+    expect(brandLink.attributes('href')).toBe('/')
   })
 
   it('shows primary navigation items', () => {

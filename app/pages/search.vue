@@ -50,11 +50,6 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useSeoMeta } from 'nuxt/app'
-import { useShowSearch } from '~/composables/useShowSearch'
-
 const route = useRoute()
 const router = useRouter()
 

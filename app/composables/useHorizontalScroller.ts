@@ -1,4 +1,4 @@
-import { ref, onMounted, onBeforeUnmount, watch, nextTick, type Ref } from 'vue'
+import type { Ref } from 'vue'
 
 export function useHorizontalScroller(gridRef: Ref<HTMLElement | null>, items: Ref<unknown[]>) {
   const canScrollPrev = ref(false)

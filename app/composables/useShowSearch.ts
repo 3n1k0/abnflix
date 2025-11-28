@@ -1,5 +1,4 @@
-import { ref, computed, watch, isRef, type Ref } from 'vue'
-import { useAsyncData } from 'nuxt/app'
+import { isRef, type Ref } from 'vue'
 import type { ShowItem } from '../../types/shows'
 
 const MIN_QUERY_LENGTH = 2
