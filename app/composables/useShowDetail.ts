@@ -33,7 +33,7 @@ export function useShowDetail(slugParam: Ref<string>) {
 
   const { data: cast } = useAsyncData(
     () => `cast-${showId.value}`,
-    () => (showId.value ? $fetch(`/api/shows/${showId.value}/cast`) : null),
+    () => (showId.value ? $fetch(`/api/shows/${showId.value}/cast`) : Promise.resolve(null)),
     { watch: [showId], default: () => null }
   )
 

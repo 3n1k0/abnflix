@@ -18,7 +18,11 @@
         </p>
       </div>
     </section>
-    <section class="container search-results" aria-live="polite" aria-labelledby="search-results-heading">
+    <section
+      class="container search-results"
+      aria-live="polite"
+      aria-labelledby="search-results-heading"
+    >
       <h2 id="search-results-heading" class="sr-only">Search results</h2>
       <div
         v-if="searchState !== 'results'"

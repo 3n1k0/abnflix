@@ -15,7 +15,7 @@
           decoding="async"
           sizes="(max-width: 640px) 70vw, 192px"
           class="show-card__image"
-          @error="(e) => e.target.src = '/images/show-card.png'"
+          @error="(e) => (e.target.src = '/images/show-card.png')"
         />
 
         <RatingBadge v-if="rating != null" class="show-card__rating" :value="rating" />
