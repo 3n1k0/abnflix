@@ -3,7 +3,7 @@
     <article class="show-card">
       <div class="show-card__media">
         <NuxtImg
-          :src="currentSrc"
+          :src="imageSrc"
           :alt="alt || `${title} poster`"
           :loading="eagerLoad || fetchPriority === 'high' ? 'eager' : 'lazy'"
           :fetchpriority="fetchPriority"
@@ -15,7 +15,7 @@
           decoding="async"
           sizes="(max-width: 640px) 70vw, 192px"
           class="show-card__image"
-          @error="handleImageError"
+          @error="(e) => e.target.src = '/images/show-card.png'"
         />
 
         <RatingBadge v-if="rating != null" class="show-card__rating" :value="rating" />
@@ -30,14 +30,7 @@
 <script setup>
 import RatingBadge from './RatingBadge.vue'
 
-const imageError = ref(false)
-const currentSrc = computed(() => (imageError.value ? '/images/show-card.png' : props.imageSrc))
-
-const handleImageError = () => {
-  imageError.value = true
-}
-
-const props = defineProps({
+defineProps({
   id: {
     type: [String, Number],
     required: true,
@@ -112,7 +105,7 @@ const props = defineProps({
   aspect-ratio: 2 / 3;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(255, 251, 235, 0.6), rgba(248, 250, 252, 0.6));
+  background: var(--gradient-card);
 }
 
 .show-card__media img {
@@ -130,7 +123,7 @@ const props = defineProps({
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(135deg, rgba(255, 251, 235, 0.8), rgba(248, 250, 252, 0.8));
+  background: var(--gradient-card-hover);
 }
 
 .placeholder-icon {

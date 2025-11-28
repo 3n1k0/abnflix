@@ -18,7 +18,8 @@
         </p>
       </div>
     </section>
-    <section class="container search-results" aria-live="polite">
+    <section class="container search-results" aria-live="polite" aria-labelledby="search-results-heading">
+      <h2 id="search-results-heading" class="search-results__heading">Search results</h2>
       <div
         v-if="searchState !== 'results'"
         class="search-results__state"
@@ -27,12 +28,11 @@
       >
         <p>{{ stateMessage }}</p>
       </div>
-      <ul v-if="searchState === 'results'" class="search-results__grid" role="list">
+      <ul v-if="searchState === 'results'" class="search-results__grid">
         <li
           v-for="(show, index) in results"
           :key="show.id ?? `${show.title}-${index}`"
           class="search-results__item"
-          role="listitem"
         >
           <ShowCard
             :id="show.id || `${show.title}-${index}`"
@@ -114,7 +114,7 @@ useSeoMeta({
 
 .search-hero {
   border-bottom: 0.66px solid var(--color-border-soft);
-  background: linear-gradient(135deg, rgba(255, 251, 235, 0.8), rgba(255, 255, 255, 0.8));
+  background: var(--gradient-hero);
 }
 
 .search-hero__inner {
@@ -171,6 +171,14 @@ useSeoMeta({
   gap: 20px;
 }
 
+.search-results__heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-ink);
+}
+
 .search-results__grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -197,8 +205,8 @@ useSeoMeta({
 }
 
 .search-results__state--error {
-  color: #b91c1c;
-  border-color: rgba(185, 28, 28, 0.25);
+  color: var(--color-error);
+  border-color: var(--color-error-border-subtle);
 }
 
 .search-results__state p {

@@ -19,12 +19,11 @@
         <ChevronLeftIcon />
       </button>
 
-      <ul ref="gridRef" class="show-list__grid" role="list">
+      <ul ref="gridRef" class="show-list__grid">
         <li
           v-for="(show, index) in normalizedShows"
           :key="show.id ?? show.title"
           class="show-list__card"
-          role="listitem"
         >
           <ShowCard
             :id="show.id"

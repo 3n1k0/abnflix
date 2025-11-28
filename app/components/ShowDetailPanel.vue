@@ -5,22 +5,17 @@
     <header class="detail-card__header">
       <div>
         <h1 id="detail-card-title" class="detail-card__title">{{ title }}</h1>
-        <div class="detail-card__meta" role="list">
-          <div class="detail-card__pill detail-card__pill--rating" role="listitem">
+        <ul class="detail-card__meta" aria-label="Show details">
+          <li class="detail-card__pill detail-card__pill--rating">
             <StarIcon class="pill-icon" aria-hidden="true" />
             <span class="pill-value">{{ displayRating }}</span>
-          </div>
-          <span v-if="year" class="detail-card__meta-text" role="listitem">{{ year }}</span>
-          <span v-if="language" class="detail-card__pill" role="listitem">{{ language }}</span>
-          <span
-            v-for="genre in genresToRender"
-            :key="genre"
-            class="detail-card__pill"
-            role="listitem"
-          >
+          </li>
+          <li v-if="year" class="detail-card__meta-text">{{ year }}</li>
+          <li v-if="language" class="detail-card__pill">{{ language }}</li>
+          <li v-for="genre in genresToRender" :key="genre" class="detail-card__pill">
             {{ genre }}
-          </span>
-        </div>
+          </li>
+        </ul>
       </div>
     </header>
 
@@ -43,13 +38,13 @@
 
       <div v-else-if="activeTab === 'cast'" class="detail-card__cast">
         <template v-if="castToRender.length">
-          <div class="detail-card__cast-grid">
-            <div v-for="member in visibleCast" :key="member.id" class="detail-card__cast-row">
-              <div class="detail-card__cast-avatar" aria-hidden="true">
+          <ul class="detail-card__cast-grid">
+            <li v-for="member in visibleCast" :key="member.id" class="detail-card__cast-row">
+              <div class="detail-card__cast-avatar">
                 <NuxtImg
                   v-if="member.image && !castImageErrors[member.id]"
                   :src="member.image"
-                  alt=""
+                  :alt="`Headshot of ${member.name}`"
                   width="48"
                   height="48"
                   format="webp"
@@ -62,8 +57,8 @@
                 <div class="detail-card__cast-name">{{ member.name }}</div>
                 <div class="detail-card__cast-role">as {{ member.character }}</div>
               </div>
-            </div>
-          </div>
+            </li>
+          </ul>
           <button
             v-if="hasMoreCast"
             type="button"
@@ -143,7 +138,7 @@ const tabs = computed(() => {
   position: relative;
   background: var(--color-bg-white);
   border-radius: 18px;
-  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-panel-elevated);
   padding: 32px 36px 32px;
   color: var(--color-ink);
   overflow: hidden;
@@ -176,6 +171,9 @@ const tabs = computed(() => {
 }
 
 .detail-card__meta {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -188,7 +186,7 @@ const tabs = computed(() => {
   gap: 6px;
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(225, 113, 0, 0.08);
+  background: var(--color-primary-light);
   color: var(--color-primary);
   font-size: var(--text-sm);
   letter-spacing: var(--tracking-tight);
@@ -196,9 +194,9 @@ const tabs = computed(() => {
 }
 
 .detail-card__pill--rating {
-  background: rgba(254, 154, 0, 0.18);
+  background: var(--color-rating-light);
   color: var(--color-ink);
-  box-shadow: inset 0 0 0 1px rgba(254, 154, 0, 0.26);
+  box-shadow: inset 0 0 0 1px var(--color-border-rating);
 }
 
 .pill-icon {
@@ -222,7 +220,7 @@ const tabs = computed(() => {
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
-  border-bottom: 1px solid rgba(225, 113, 0, 0.18);
+  border-bottom: 1px solid var(--color-border-primary);
   padding-bottom: 8px;
 }
 
@@ -269,7 +267,7 @@ const tabs = computed(() => {
   height: 20px;
   padding: 0 6px;
   border-radius: 999px;
-  background: rgba(225, 113, 0, 0.16);
+  background: var(--color-primary-medium);
   color: var(--color-primary);
   font-size: 12px;
   line-height: 1.2;
@@ -311,7 +309,7 @@ const tabs = computed(() => {
   height: 48px;
   border-radius: 50%;
   overflow: hidden;
-  background: rgba(225, 113, 0, 0.08);
+  background: var(--color-primary-light);
   display: inline-flex;
   align-items: center;
   justify-content: center;

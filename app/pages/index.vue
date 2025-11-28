@@ -14,10 +14,10 @@
     </div>
 
     <div v-else-if="pending" class="container loading-state">
-      <div v-for="i in 4" :key="i" class="skeleton-section">
+      <div v-for="i in SKELETON_SECTION_COUNT" :key="i" class="skeleton-section">
         <div class="skeleton-title" />
         <div class="skeleton-shows">
-          <div v-for="j in 10" :key="j" class="skeleton-card" />
+          <div v-for="j in SKELETON_CARD_COUNT" :key="j" class="skeleton-card" />
         </div>
       </div>
     </div>
@@ -33,13 +33,17 @@
         :title="genre.name"
         action-label="View All"
         :shows="genre.shows"
-        :eager-load-count="index === 0 ? 4 : 0"
+        :eager-load-count="index === 0 ? INITIAL_EAGER_LOAD_COUNT : 0"
       />
     </section>
   </main>
 </template>
 
 <script setup>
+const SKELETON_SECTION_COUNT = 4
+const SKELETON_CARD_COUNT = 10
+const INITIAL_EAGER_LOAD_COUNT = 4
+
 const { genres, error, pending, refresh } = useShows()
 
 useSeoMeta({
@@ -74,8 +78,8 @@ useSeoMeta({
   margin: 0 auto;
   text-align: center;
   padding: 48px 32px;
-  background: rgba(220, 38, 38, 0.1);
-  border: 1px solid rgba(220, 38, 38, 0.3);
+  background: var(--color-error-light);
+  border: 1px solid var(--color-error-border);
   border-radius: 12px;
 }
 
@@ -87,21 +91,21 @@ useSeoMeta({
 .error-title {
   font-size: 24px;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text-white);
   margin-bottom: 12px;
 }
 
 .error-message {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-white-muted);
   margin-bottom: 24px;
   line-height: 1.5;
 }
 
 .retry-button {
   padding: 12px 24px;
-  background: #e50914;
-  color: #fff;
+  background: var(--color-accent);
+  color: var(--color-text-white);
   border: none;
   border-radius: 6px;
   font-size: 16px;
@@ -111,7 +115,7 @@ useSeoMeta({
 }
 
 .retry-button:hover {
-  background: #f6121d;
+  background: var(--color-accent-hover);
 }
 
 /* Loading State */
@@ -126,7 +130,7 @@ useSeoMeta({
 .skeleton-title {
   width: 180px;
   height: 32px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-white-subtle);
   border-radius: 6px;
   margin-bottom: 24px;
   animation: pulse 1.5s ease-in-out infinite;
@@ -140,7 +144,7 @@ useSeoMeta({
 
 .skeleton-card {
   aspect-ratio: 2 / 3;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-white-subtle);
   border-radius: 8px;
   animation: pulse 1.5s ease-in-out infinite;
 }

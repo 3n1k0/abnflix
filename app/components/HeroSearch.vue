@@ -3,7 +3,7 @@
     class="hero-search"
     role="search"
     aria-label="Search for shows"
-    @submit.prevent="handleSubmit"
+    @submit.prevent="$emit('submit')"
   >
     <label class="sr-only" for="hero-search-input">Search for shows</label>
     <span class="hero-search__icon" aria-hidden="true">
@@ -11,48 +11,26 @@
     </span>
     <input
       id="hero-search-input"
-      v-model="queryModel"
+      :value="modelValue"
       name="query"
       type="search"
       placeholder="Search for shows..."
       autocomplete="off"
       class="form-control"
+      @input="$emit('update:modelValue', $event.target.value)"
     />
   </form>
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   modelValue: {
     type: String,
     default: '',
   },
 })
 
-const emit = defineEmits(['update:modelValue', 'search'])
-
-const query = ref(props.modelValue ?? '')
-
-watch(
-  () => props.modelValue,
-  (value) => {
-    query.value = value ?? ''
-  }
-)
-
-const updateQuery = (value) => {
-  query.value = value
-  emit('update:modelValue', value)
-}
-
-const queryModel = computed({
-  get: () => query.value,
-  set: updateQuery,
-})
-
-const handleSubmit = () => {
-  emit('search', query.value.trim())
-}
+defineEmits(['update:modelValue', 'submit'])
 </script>
 
 <style scoped>

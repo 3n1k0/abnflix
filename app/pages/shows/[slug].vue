@@ -146,7 +146,7 @@ useSeoMeta({
 .show-detail {
   min-height: calc(100vh - 64px);
   padding: 48px 0 64px;
-  background: linear-gradient(180deg, rgba(255, 251, 235, 0.6) 0%, rgba(255, 255, 255, 0.6) 40%);
+  background: var(--gradient-detail);
 }
 
 .show-detail__content {
@@ -182,7 +182,7 @@ useSeoMeta({
   align-items: center;
   justify-content: center;
   gap: 16px;
-  background: linear-gradient(135deg, rgba(255, 251, 235, 0.8), rgba(248, 250, 252, 0.8));
+  background: var(--gradient-card-hover);
 }
 
 .poster-error__icon {
@@ -254,19 +254,14 @@ useSeoMeta({
 .skeleton {
   position: relative;
   overflow: hidden;
-  background: #e5e7eb;
+  background: var(--color-bg-gray);
 }
 
 .skeleton::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(229, 231, 235, 0) 0%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(229, 231, 235, 0) 100%
-  );
+  background: var(--gradient-scroll-indicator);
   transform: translateX(-100%);
   animation: shimmer 1.4s ease-in-out infinite;
 }
@@ -283,7 +278,7 @@ useSeoMeta({
   max-width: 540px;
   min-height: 320px;
   border-radius: 18px;
-  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-panel);
 }
 
 @keyframes shimmer {

@@ -5,20 +5,17 @@
       <p class="hero-copy">
         Explore thousands of TV shows across all genres. Find something new to watch tonight.
       </p>
-      <HeroSearch v-model="query" @search="handleSearch" />
+      <HeroSearch v-model="query" @submit="handleSubmit" />
     </div>
   </section>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-import HeroSearch from './HeroSearch.vue'
-
 const router = useRouter()
 const query = ref('')
 
-const handleSearch = (value) => {
-  const normalized = value.trim()
+const handleSubmit = () => {
+  const normalized = query.value.trim()
 
   if (!normalized) return
 
