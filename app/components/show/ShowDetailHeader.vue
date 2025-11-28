@@ -15,16 +15,32 @@
   </header>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import StarIcon from '../icons/StarIcon.vue'
-
-defineProps<{
-  title: string
-  year?: string | number
-  displayRating: string | number
-  language?: string
-  genres: string[]
-}>()
+defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  displayRating: {
+    type: String,
+    required: true,
+  },
+  year: {
+    type: [String, Number],
+    required: false,
+    default: null,
+  },
+  language: {
+    type: String,
+    required: false,
+    default: null,
+  },
+  genres: {
+    type: Array,
+    required: true,
+  },
+})
 </script>
 
 <style scoped>

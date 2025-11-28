@@ -18,44 +18,45 @@
   </ShowDetailCard>
 </template>
 
-<script setup lang="ts">
-import type { ShowItem, CastMember } from '../../types/shows'
-import ShowDetailCard from './show/ShowDetailCard.vue'
-import ShowDetailHeader from './show/ShowDetailHeader.vue'
-import ShowDetailTabs from './show/ShowDetailTabs.vue'
-import ShowDetailSummary from './show/ShowDetailSummary.vue'
-import ShowDetailCast from './show/ShowDetailCast.vue'
-import ShowDetailEpisodes from './show/ShowDetailEpisodes.vue'
-import { useDetailTabs } from '../composables/ui/useDetailTabs'
-
-const props = defineProps<{
-  show: ShowItem
-  genres?: string[]
-  summary?: string
-  cast?: CastMember[] | null
-  castCount?: number | null
-  episodeCount?: number | null
-}>()
-const { active: activeTab, tabs } = useDetailTabs(props)
+<script setup>
+const props = defineProps({
+  show: {
+    type: Object,
+    default: null,
+  },
+  summary: {
+    type: String,
+    default: '',
+  },
+  genres: {
+    type: Array,
+    default: () => [],
+  },
+  cast: {
+    type: Array,
+    default: () => [],
+  },
+  tabs: {
+    type: Array,
+    default: () => [],
+  },
+})
 
 const title = computed(() => props.show?.title || 'Untitled')
 const year = computed(() => props.show?.year ?? '')
-const displayRating = computed(() => props.show?.rating ?? '—')
+const displayRating = computed(() => props.show?.rating != null ? String(props.show.rating) : '—')
 const language = computed(() => props.show?.language || '')
 
 const summaryText = computed(() => {
   const trimmed = props.summary?.trim()
   if (trimmed) return trimmed
-
   return `${title.value} is a popular show${year.value ? ` from ${year.value}` : ''}. Rated ${displayRating.value}/10.`
 })
 
-const genresToRender = computed(() => {
-  if (props.genres?.length) return props.genres
-  return []
-})
-
+const genresToRender = computed(() => props.genres || [])
 const castToRender = computed(() => props.cast || [])
+
+const activeTab = ref('summary')
 </script>
 
 <style scoped>

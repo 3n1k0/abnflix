@@ -14,15 +14,17 @@
   </nav>
 </template>
 
-<script setup lang="ts">
-import type { DetailTabKey } from '../../composables/ui/useDetailTabs'
-
-defineProps<{
-  tabs: { key: DetailTabKey; label: string; count: number | null }[]
-  activeTab: DetailTabKey
-}>()
-
-defineEmits<{ 'update:activeTab': [value: DetailTabKey] }>()
+<script setup>
+defineProps({
+  tabs: {
+    type: Array,
+    required: true,
+  },
+  activeTab: {
+    type: String,
+    required: true,
+  },
+});
 </script>
 
 <style scoped>

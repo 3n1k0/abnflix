@@ -35,11 +35,14 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import type { CastMember } from '../../types/shows'
-import { useCastList } from '../../composables/useCastList'
-
-const props = defineProps<{ cast: CastMember[] | null }>()
+<script setup>
+const props = defineProps({
+  cast: {
+    type: Array,
+    required: false,
+    default: () => [],
+  },
+})
 
 const castToRender = computed(() => props.cast || [])
 

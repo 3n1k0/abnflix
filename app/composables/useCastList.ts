@@ -1,5 +1,5 @@
 import { computed, reactive, ref, type Ref } from 'vue'
-import type { CastMember } from '../types/shows'
+import type { CastMember } from '~~/types/shows'
 
 export function useCastList(cast: Ref<CastMember[]>) {
   const showAll = ref(false)

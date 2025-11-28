@@ -2,8 +2,13 @@
   <p class="detail-card__text">{{ text }}</p>
 </template>
 
-<script setup lang="ts">
-defineProps<{ text: string }>()
+<script setup>
+defineProps({
+  text: {
+    type: String,
+    required: true,
+  },
+});
 </script>
 
 <style scoped>
