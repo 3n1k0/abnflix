@@ -11,7 +11,6 @@
             Look up titles across every genre and language. We surface the best matches instantly.
           </p>
         </div>
-
         <HeroSearch v-model="searchInput" @search="handleSearch" />
 
         <p class="search-hero__hint" aria-live="polite">
@@ -85,7 +84,6 @@ watch(
     activeQuery.value = normalized
   }
 )
-
 const handleSearch = (value) => {
   const normalized = value.trim()
   searchInput.value = normalized
@@ -172,8 +170,10 @@ useSeoMeta({
 
 .search-results__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-rows: auto;
+  gap: 18px;
+  align-items: stretch;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -212,7 +212,14 @@ useSeoMeta({
   }
 
   .search-results__grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 960px) and (min-width: 641px) {
+  .search-results__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 </style>

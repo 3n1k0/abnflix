@@ -32,6 +32,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import RatingBadge from './RatingBadge.vue'
 
 const imageError = ref(false)
