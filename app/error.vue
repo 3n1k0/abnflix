@@ -6,9 +6,7 @@
       <p class="error-message">{{ errorMessage }}</p>
 
       <div class="error-actions">
-        <NuxtLink to="/" class="error-button error-button--primary">
-          Go Home
-        </NuxtLink>
+        <NuxtLink to="/" class="error-button error-button--primary"> Go Home </NuxtLink>
         <button
           v-if="error.statusCode !== 404"
           class="error-button error-button--secondary"
@@ -181,7 +179,8 @@ useSeoMeta({
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

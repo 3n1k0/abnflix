@@ -14,28 +14,20 @@
         <HeroSearch v-model="searchInput" @search="handleSearch" />
 
         <p class="search-hero__hint" aria-live="polite">
-          <span v-if="!hasQuery">Try "The Office", "Game of Thrones", or "Stranger Things".</span>
-          <span v-else-if="pending">Searching for "{{ trimmedQuery }}"...</span>
-          <span v-else-if="hasResults">{{ results.length }} results for "{{ trimmedQuery }}"</span>
-          <span v-else>No matches for "{{ trimmedQuery }}" yet.</span>
+          <span v-show="!hasQuery">Try "The Office", "Game of Thrones", or "Stranger Things".</span>
+          <span v-show="hasResults">{{ results.length }} results for "{{ trimmedQuery }}"</span>
+          <span v-show="hasQuery && !hasResults">No matches for "{{ trimmedQuery }}" yet.</span>
         </p>
       </div>
     </section>
-
     <section class="container search-results" aria-live="polite">
-      <div v-if="error" class="search-results__state search-results__state--error" role="alert">
+      <div v-show="error" class="search-results__state search-results__state--error" role="alert">
         <p>We couldn't search right now. Please try again.</p>
       </div>
-
-      <div v-else-if="pending && hasQuery" class="search-results__state">
-        <p>Searching for "{{ trimmedQuery }}"...</p>
-      </div>
-
-      <div v-else-if="!hasQuery" class="search-results__state">
+      <div v-show="!error && !hasQuery" class="search-results__state">
         <p>Start typing a show name to see matches.</p>
       </div>
-
-      <ul v-else-if="hasResults" class="search-results__grid" role="list">
+      <ul v-show="!error && hasQuery && hasResults" class="search-results__grid" role="list">
         <li
           v-for="(show, index) in results"
           :key="show.id ?? `${show.title}-${index}`"
@@ -53,8 +45,7 @@
           />
         </li>
       </ul>
-
-      <div v-else class="search-results__state">
+      <div v-show="!error && hasQuery && !hasResults" class="search-results__state">
         <p>No shows found for "{{ trimmedQuery }}".</p>
       </div>
     </section>
@@ -62,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSeoMeta } from 'nuxt/app'
 import { useShowSearch } from '~/composables/useShowSearch'
@@ -70,27 +61,26 @@ import { useShowSearch } from '~/composables/useShowSearch'
 const route = useRoute()
 const router = useRouter()
 
-const initialQuery = typeof route.query.q === 'string' ? route.query.q : ''
-const searchInput = ref(initialQuery)
-const activeQuery = ref(initialQuery)
+const searchInput = computed({
+  get: () => {
+    const q = route.query.q
+    return typeof q === 'string' ? q : ''
+  },
+  set: (value) => {
+    const normalized = value.trim()
+    router.replace({
+      path: '/search',
+      query: normalized ? { q: normalized } : {},
+    })
+  },
+})
 
-const { results, pending, error, hasQuery, hasResults, trimmedQuery } = useShowSearch(activeQuery)
+// Plug into your composable
+const { results, error, hasQuery, hasResults, trimmedQuery } = useShowSearch(searchInput)
 
-watch(
-  () => route.query.q,
-  (value) => {
-    const normalized = typeof value === 'string' ? value : ''
-    searchInput.value = normalized
-    activeQuery.value = normalized
-  }
-)
 const handleSearch = (value) => {
   const normalized = value.trim()
-  searchInput.value = normalized
-  activeQuery.value = normalized
-
-  const query = normalized ? { q: normalized } : {}
-  router.replace({ path: '/search', query })
+  router.replace({ path: '/search', query: normalized ? { q: normalized } : {} })
 }
 
 useSeoMeta({

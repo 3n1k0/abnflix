@@ -2,13 +2,8 @@
   <NuxtLink :to="`/shows/${slug || id}`" class="show-card-link">
     <article class="show-card">
       <div class="show-card__media">
-        <div v-if="imageError" class="show-card__placeholder">
-          <div class="placeholder-icon">📺</div>
-          <span class="placeholder-text">No Image</span>
-        </div>
         <NuxtImg
-          v-else
-          :src="imageSrc"
+          :src="currentSrc"
           :alt="alt || `${title} poster`"
           :loading="eagerLoad || fetchPriority === 'high' ? 'eager' : 'lazy'"
           :fetchpriority="fetchPriority"
@@ -19,6 +14,7 @@
           fit="cover"
           decoding="async"
           sizes="(max-width: 640px) 70vw, 192px"
+          class="show-card__image"
           @error="handleImageError"
         />
 
@@ -32,14 +28,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import RatingBadge from './RatingBadge.vue'
 
 const imageError = ref(false)
+const currentSrc = computed(() => (imageError.value ? '/images/show-card.png' : props.imageSrc))
 
 const handleImageError = () => {
   imageError.value = true
-  console.warn(`Failed to load image for show: ${props.title}`)
 }
 
 const props = defineProps({

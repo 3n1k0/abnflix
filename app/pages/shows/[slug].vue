@@ -2,54 +2,53 @@
   <main role="main" class="show-detail">
     <div class="container">
       <BackButton />
-      <div v-if="show" class="show-detail__content">
-        <div class="show-detail__poster" :class="{ 'is-loading': !posterLoaded }">
-          <div v-if="!posterLoaded && !posterError" class="skeleton skeleton--poster" aria-hidden="true" />
-          <div v-if="posterError" class="poster-error">
-            <div class="poster-error__icon">📺</div>
-            <div class="poster-error__text">Image unavailable</div>
+
+      <div class="show-detail__content">
+        <!-- Loading state -->
+        <template v-if="isLoading">
+          <div class="show-detail__poster skeleton skeleton--poster" aria-hidden="true" />
+          <div class="show-detail__panel skeleton skeleton--panel" aria-hidden="true" />
+        </template>
+        <template v-else-if="show">
+          <div class="show-detail__poster">
+            <div v-show="posterError" class="poster-error">
+              <div class="poster-error__icon">📺</div>
+              <div class="poster-error__text">Image unavailable</div>
+            </div>
+            <NuxtImg
+              v-show="!posterError"
+              class="show-detail__image"
+              :src="show.imageFullSrc || show.imageSrc"
+              :alt="show.alt || `${show.title} poster`"
+              width="400"
+              height="600"
+              format="webp"
+              quality="85"
+              fit="cover"
+              sizes="(max-width: 640px) 80vw, 400px"
+              @error="handlePosterError"
+            />
           </div>
-          <NuxtImg
-            v-else
-            :src="show.imageFullSrc || show.imageSrc"
-            :alt="show.alt || `${show.title} poster`"
-            width="400"
-            height="600"
-            format="webp"
-            quality="85"
-            fit="cover"
-            loading="eager"
-            decoding="async"
-            sizes="(max-width: 640px) 80vw, 400px"
-            @load="posterLoaded = true"
-            @error="handlePosterError"
-          />
-          <RatingBadge
-            v-if="show.rating != null"
-            class="show-detail__rating"
-            :value="show.rating"
-          />
-        </div>
-        <ShowDetailPanel
-          class="show-detail__panel"
-          :show="show"
-          :summary="summaryText"
-          :genres="detailGenres"
-          :cast="cast || []"
-          :cast-count="castCount"
-          :episode-count="episodeCount"
-        />
-      </div>
 
-      <div v-else-if="isLoading" class="show-detail__content">
-        <div class="show-detail__poster skeleton skeleton--poster" aria-hidden="true" />
-        <div class="show-detail__panel skeleton skeleton--panel" aria-hidden="true" />
-      </div>
+          <ShowDetailPanel
+            class="show-detail__panel"
+            :show="show"
+            :summary="summaryText"
+            :genres="detailGenres"
+            :cast="cast || []"
+            :cast-count="castCount"
+            :episode-count="episodeCount"
+          />
+        </template>
 
-      <div v-else class="show-detail__not-found">
-        <h1>Show Not Found</h1>
-        <p>The show you're looking for doesn't exist.</p>
-        <BackButton />
+        <!-- Not found -->
+        <template v-else>
+          <div class="show-detail__not-found">
+            <h1>Show Not Found</h1>
+            <p>The show you're looking for doesn't exist.</p>
+            <BackButton />
+          </div>
+        </template>
       </div>
     </div>
   </main>
@@ -62,9 +61,7 @@ const { allShows, pending } = useShows()
 const slugParam = computed(() => String(route.params.slug))
 
 const cachedShow = computed(() => {
-  return allShows.value.find(
-    (s) => s.slug === slugParam.value || String(s.id) === slugParam.value
-  )
+  return allShows.value.find((s) => s.slug === slugParam.value || String(s.id) === slugParam.value)
 })
 
 const shouldFetch = computed(() => !cachedShow.value && Boolean(slugParam.value))
@@ -74,6 +71,7 @@ const fetchShow = async () => {
   try {
     return await $fetch(`/api/shows/${encodeURIComponent(slugParam.value)}`)
   } catch (err) {
+    console.error('Failed to fetch show:', err)
     return null
   }
 }
@@ -87,17 +85,14 @@ const { data: fetchedShow, pending: fetching } = useAsyncData(fetchShow, {
 const show = computed(() => cachedShow.value || fetchedShow.value)
 
 const isLoading = computed(() => (pending.value || fetching.value) && !show.value)
-const posterLoaded = ref(false)
 const posterError = ref(false)
 
 const handlePosterError = () => {
   posterError.value = true
-  posterLoaded.value = true
   console.warn(`Failed to load poster image for show: ${show.value?.title}`)
 }
 
 watch(show, () => {
-  posterLoaded.value = false
   posterError.value = false
 })
 
@@ -172,17 +167,11 @@ useSeoMeta({
   box-shadow: var(--shadow-elevated);
 }
 
-.show-detail__poster img {
+.show-detail__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  opacity: 1;
-  transition: opacity var(--transition-fast);
-}
-
-.show-detail__poster.is-loading img {
-  opacity: 0;
 }
 
 .poster-error {

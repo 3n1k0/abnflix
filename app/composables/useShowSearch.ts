@@ -5,45 +5,38 @@ import type { ShowItem } from '../../types/shows'
 const MIN_QUERY_LENGTH = 2
 const DEBOUNCE_MS = 250
 
-function normalizeQuery(value: string) {
-  return value.replace(/\s+/g, ' ').trim()
-}
-
-function isMeaningfulQuery(value: string) {
-  return value.length >= MIN_QUERY_LENGTH && /[a-zA-Z0-9]/.test(value)
-}
-
 export function useShowSearch(initialQuery: string | Ref<string> = '') {
   const query = isRef(initialQuery) ? initialQuery : ref(initialQuery)
-  const trimmedQuery = computed(() => normalizeQuery(query.value))
-  const meetsMinLength = computed(() => isMeaningfulQuery(trimmedQuery.value))
 
-  const debouncedQuery = ref('')
-  const lastQueried = ref('')
-  let debounceHandle: ReturnType<typeof setTimeout> | undefined
+  const trimmed = computed(() => query.value.trim())
+  const meaningful = computed(() => trimmed.value.length >= MIN_QUERY_LENGTH)
+
+  const debounced = ref(trimmed.value)
+
+  let timer = null as ReturnType<typeof setTimeout> | null
 
   watch(
-    trimmedQuery,
+    trimmed,
     (value) => {
-      if (debounceHandle) clearTimeout(debounceHandle)
+      if (timer !== null) {
+        clearTimeout(timer)
+      }
 
-      if (!isMeaningfulQuery(value)) {
-        debouncedQuery.value = ''
+      if (!meaningful.value) {
+        debounced.value = ''
         return
       }
 
-      debounceHandle = setTimeout(() => {
-        debouncedQuery.value = value
+      timer = setTimeout(() => {
+        debounced.value = value
       }, DEBOUNCE_MS)
     },
-    { immediate: true }
+    { flush: 'post' }
   )
 
-  const hasQuery = computed(() => debouncedQuery.value.length >= MIN_QUERY_LENGTH)
+  const hasQuery = computed(() => debounced.value.length >= MIN_QUERY_LENGTH)
 
-  const searchKey = computed(() =>
-    hasQuery.value ? `search-shows-${debouncedQuery.value}` : 'search-shows-empty'
-  )
+  const ssrKey = computed(() => `search-${trimmed.value}`)
 
   const {
     data: results,
@@ -51,48 +44,30 @@ export function useShowSearch(initialQuery: string | Ref<string> = '') {
     error,
     refresh,
   } = useAsyncData<ShowItem[]>(
-    searchKey,
+    ssrKey,
     async () => {
       if (!hasQuery.value) return []
-      return $fetch(`/api/search?q=${encodeURIComponent(debouncedQuery.value)}`)
+      return $fetch(`/api/search?q=${encodeURIComponent(debounced.value)}`)
     },
     {
       default: () => [],
-      immediate: false,
+      server: true,
+      lazy: false,
+      immediate: true,
     }
   )
 
-  watch(
-    debouncedQuery,
-    async (value) => {
-      if (!isMeaningfulQuery(value)) {
-        results.value = []
-        lastQueried.value = ''
-        return
-      }
-
-      if (value === lastQueried.value) {
-        return
-      }
-
-      lastQueried.value = value
-      await refresh()
-    },
-    { immediate: true }
-  )
-
-  const hasResults = computed(() => Array.isArray(results.value) && results.value.length > 0)
+  const hasResults = computed(() => results.value?.length > 0)
 
   return {
     query,
-    trimmedQuery,
-    debouncedQuery,
+    trimmedQuery: trimmed,
+    debouncedQuery: debounced,
     hasQuery,
-    meetsMinLength,
+    hasResults,
     results,
     pending,
     error,
     refresh,
-    hasResults,
   }
 }
