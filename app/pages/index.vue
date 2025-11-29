@@ -2,40 +2,46 @@
   <main role="main" class="main-content">
     <HeroSection />
 
-    <div v-if="error" class="container error-state">
-      <div class="error-card">
         <div class="error-icon">⚠️</div>
-        <h2 class="error-title">Unable to Load Shows</h2>
-        <p class="error-message">
-          {{ error.message || 'Failed to fetch shows. Please try again later.' }}
-        </p>
-        <button class="retry-button" @click="refresh">Try Again</button>
-      </div>
-    </div>
-
-    <div v-else-if="pending" class="container loading-state">
-      <div v-for="i in SKELETON_SECTION_COUNT" :key="i" class="skeleton-section">
-        <div class="skeleton-title" />
-        <div class="skeleton-shows">
-          <div v-for="j in SKELETON_CARD_COUNT" :key="j" class="skeleton-card" />
+    <template v-if="isError">
+      <div class="container error-state">
+        <div class="error-card">
+          <div class="error-icon">⚠️</div>
+          <h2 class="error-title">Unable to Load Shows</h2>
+          <p class="error-message">
+            {{ error?.message || 'Failed to fetch shows. Please try again later.' }}
+          </p>
+          <button class="retry-button" @click="refresh">Try Again</button>
         </div>
       </div>
-    </div>
+    </template>
 
-    <section
-      v-for="(genre, index) in genres"
-      v-else
-      :key="genre.name"
-      class="container genre-section"
-      :aria-label="`Genre: ${genre.name}`"
-    >
-      <ShowList
-        :title="genre.name"
-        action-label="View All"
-        :shows="genre.shows"
-        :eager-load-count="index === 0 ? INITIAL_EAGER_LOAD_COUNT : 0"
-      />
-    </section>
+    <template v-else-if="isLoading">
+      <div class="container loading-state">
+        <div v-for="(_, index) in skeletonSections" :key="index" class="skeleton-section">
+          <div class="skeleton-title" />
+          <div class="skeleton-shows">
+            <div v-for="(__, cardIndex) in skeletonCards" :key="cardIndex" class="skeleton-card" />
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template v-else-if="isReady">
+      <section
+        v-for="(genre, index) in genres"
+        :key="genre.name"
+        class="container genre-section"
+        :aria-label="`Genre: ${genre.name}`"
+      >
+        <ShowList
+          :title="genre.name"
+          action-label="View All"
+          :shows="genre.shows"
+          :eager-load-count="index === 0 ? INITIAL_EAGER_LOAD_COUNT : 0"
+        />
+      </section>
+    </template>
   </main>
 </template>
 
@@ -44,7 +50,20 @@ const SKELETON_SECTION_COUNT = 4
 const SKELETON_CARD_COUNT = 10
 const INITIAL_EAGER_LOAD_COUNT = 4
 
+const skeletonSections = computed(() => Array.from({ length: SKELETON_SECTION_COUNT }))
+const skeletonCards = computed(() => Array.from({ length: SKELETON_CARD_COUNT }))
+
 const { genres, error, pending, refresh } = useShows()
+
+const viewState = computed(() => {
+  if (error.value) return 'error'
+  if (pending.value) return 'loading'
+  return 'ready'
+})
+
+const isError = computed(() => viewState.value === 'error')
+const isLoading = computed(() => viewState.value === 'loading')
+const isReady = computed(() => viewState.value === 'ready')
 
 useSeoMeta({
   title: 'TV Shows Dashboard',
@@ -68,7 +87,6 @@ useSeoMeta({
   min-height: 320px;
 }
 
-/* Error State */
 .error-state {
   padding: 80px 20px;
 }

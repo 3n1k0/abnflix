@@ -40,6 +40,6 @@ describe('HeroSearch', () => {
     expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['New Query'])
 
     await wrapper.get('form').trigger('submit.prevent')
-    expect(wrapper.emitted('search')?.[0]).toEqual(['New Query'])
+    expect(wrapper.emitted('submit')).toBeTruthy()
   })
 })

@@ -12,14 +12,13 @@ const mockError = ref(null)
 const routeMock = ref({ query: {} as Record<string, string> })
 const replaceMock = vi.fn()
 
-vi.mock('vue-router', () => ({
-  useRouter: () => ({ replace: replaceMock, push: vi.fn() }),
-  useRoute: () => routeMock.value,
-}))
-
-vi.mock('nuxt/app', () => ({
-  useSeoMeta: vi.fn(),
-}))
+vi.mock('nuxt/app', async () => {
+  return {
+    useRouter: () => ({ replace: replaceMock, push: vi.fn() }),
+    useRoute: () => routeMock.value,
+    useSeoMeta: vi.fn(),
+  }
+})
 
 vi.mock('~/composables/useShowSearch', () => ({
   useShowSearch: (queryRef = ref('')) => ({

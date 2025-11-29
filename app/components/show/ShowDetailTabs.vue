@@ -24,7 +24,9 @@ defineProps({
     type: String,
     required: true,
   },
-});
+})
+
+defineEmits(['update:activeTab'])
 </script>
 
 <style scoped>

@@ -5,7 +5,7 @@ import HeroSection from '@/components/HeroSection.vue'
 
 const pushMock = vi.fn()
 
-vi.mock('vue-router', () => ({
+vi.mock('nuxt/app', () => ({
   useRouter: () => ({ push: pushMock }),
 }))
 

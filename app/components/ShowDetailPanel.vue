@@ -44,7 +44,7 @@ const props = defineProps({
 
 const title = computed(() => props.show?.title || 'Untitled')
 const year = computed(() => props.show?.year ?? '')
-const displayRating = computed(() => props.show?.rating != null ? String(props.show.rating) : '—')
+const displayRating = computed(() => (props.show?.rating != null ? String(props.show.rating) : '—'))
 const language = computed(() => props.show?.language || '')
 
 const summaryText = computed(() => {
