@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { nextTick, ref } from 'vue'
-import { useHomeViewState } from '~/composables/ui/useHomeViewState'
+import { useHomeViewState } from '~/composables/useHomeViewState'
 
 describe('useHomeViewState', () => {
   it('returns loading when pending', async () => {

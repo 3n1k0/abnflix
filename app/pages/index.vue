@@ -59,6 +59,10 @@
 const { genres, error, pending, refresh } = useShows()
 const { isError, isLoading, isEmpty, isReady } = useHomeViewState({ error, pending, genres })
 
+const SKELETON_SECTION_COUNT = 4
+const SKELETON_CARD_COUNT = 10
+const INITIAL_EAGER_LOAD_COUNT = 4
+
 useSeoMeta({
   title: 'TV Shows Dashboard',
   description:

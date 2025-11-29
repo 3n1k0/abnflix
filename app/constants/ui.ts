@@ -1,3 +1,0 @@
-export const SKELETON_SECTION_COUNT = 4
-export const SKELETON_CARD_COUNT = 10
-export const INITIAL_EAGER_LOAD_COUNT = 4

@@ -36,9 +36,13 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
-  tabs: {
-    type: Array,
-    default: () => [],
+  castCount: {
+    type: Number,
+    default: null,
+  },
+  episodeCount: {
+    type: Number,
+    default: null,
   },
 })
 
@@ -56,7 +60,10 @@ const summaryText = computed(() => {
 const genresToRender = computed(() => props.genres || [])
 const castToRender = computed(() => props.cast || [])
 
-const activeTab = ref('summary')
+const { active: activeTab, tabs } = useDetailTabs({
+  castCount: toRef(props, 'castCount'),
+  episodeCount: toRef(props, 'episodeCount'),
+})
 </script>
 
 <style scoped>
