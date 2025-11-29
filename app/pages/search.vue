@@ -13,7 +13,7 @@
         </div>
         <HeroSearch v-model="searchInput" />
 
-        <p class="search-hero__hint" aria-live="polite">
+        <p class="search-hero__hint">
           {{ hintMessage }}
         </p>
       </div>
@@ -24,15 +24,23 @@
       aria-labelledby="search-results-heading"
     >
       <h2 id="search-results-heading" class="sr-only">Search results</h2>
+
+      <ul v-if="searchState === 'loading'" class="search-results__grid">
+        <li v-for="index in 10" :key="index" class="search-results__item">
+          <div class="skeleton-card" />
+        </li>
+      </ul>
+
       <div
-        v-if="searchState !== 'results'"
+        v-else-if="searchState !== 'results'"
         class="search-results__state"
         :class="{ 'search-results__state--error': searchState === 'error' }"
         :role="searchState === 'error' ? 'alert' : undefined"
       >
         <p>{{ stateMessage }}</p>
       </div>
-      <ul v-if="searchState === 'results'" class="search-results__grid">
+
+      <ul v-else-if="searchState === 'results'" class="search-results__grid">
         <li
           v-for="(show, index) in results"
           :key="show.id ?? `${show.title}-${index}`"
@@ -57,47 +65,15 @@
 const route = useRoute()
 const router = useRouter()
 
-const searchInput = computed({
-  get: () => {
-    const q = route.query.q
-    return typeof q === 'string' ? q : ''
-  },
-  set: (value) => {
-    const normalized = value.trim()
-    router.replace({
-      path: '/search',
-      query: normalized ? { q: normalized } : {},
-    })
-  },
-})
+const { searchInput } = useUrlSearchSync({ router, route })
 
-// Plug into your composable
-const { results, error, hasQuery, hasResults, trimmedQuery } = useShowSearch(searchInput)
+const { trimmedQuery, results, error, pending } = useShowSearch(searchInput)
 
-const searchState = computed(() => {
-  if (error.value) return 'error'
-  if (!hasQuery.value) return 'idle'
-  if (hasResults.value) return 'results'
-  return 'no-results'
-})
-
-const hintMessage = computed(() => {
-  if (!hasQuery.value) return 'Try "The Office", "Game of Thrones", or "Stranger Things".'
-  if (hasResults.value) return `${results.value.length} results for "${trimmedQuery.value}"`
-  return `No matches for "${trimmedQuery.value}" yet.`
-})
-
-const stateMessage = computed(() => {
-  switch (searchState.value) {
-    case 'error':
-      return "We couldn't search right now. Please try again."
-    case 'idle':
-      return 'Start typing a show name to see matches.'
-    case 'no-results':
-      return `No shows found for "${trimmedQuery.value}".`
-    default:
-      return ''
-  }
+const { searchState, hintMessage, stateMessage } = useSearchViewState({
+  trimmedQuery,
+  results,
+  error,
+  pending,
 })
 
 useSeoMeta({
@@ -173,6 +149,7 @@ useSeoMeta({
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-height: 100vh;
 }
 
 .search-results__grid {
@@ -207,6 +184,24 @@ useSeoMeta({
 
 .search-results__state p {
   margin: 0;
+}
+
+.skeleton-card {
+  aspect-ratio: 2 / 3;
+  width: 100%;
+  background: var(--color-bg-white-subtle);
+  border-radius: var(--radius-md);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @media (max-width: 640px) {
