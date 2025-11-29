@@ -11,7 +11,7 @@
   --color-bg: #f8fafc;
   --color-bg-white: #fff;
   --color-bg-white-translucent: rgba(255, 255, 255, 0.95);
-  --color-bg-white-subtle: rgba(255, 255, 255, 0.1);
+  --color-bg-white-subtle: rgba(0, 0, 0, 0.08);
   --color-bg-amber-light: #fffbeb;
   --color-bg-gray: #e5e7eb;
 

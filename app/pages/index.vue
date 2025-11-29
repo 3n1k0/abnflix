@@ -2,10 +2,9 @@
   <main role="main" class="main-content">
     <HeroSection />
 
-        <div class="error-icon">⚠️</div>
     <template v-if="isError">
       <div class="container error-state">
-        <div class="error-card">
+        <div class="error-card" role="alert">
           <div class="error-icon">⚠️</div>
           <h2 class="error-title">Unable to Load Shows</h2>
           <p class="error-message">
@@ -18,11 +17,22 @@
 
     <template v-else-if="isLoading">
       <div class="container loading-state">
-        <div v-for="(_, index) in skeletonSections" :key="index" class="skeleton-section">
+        <div v-for="index in SKELETON_SECTION_COUNT" :key="index" class="skeleton-section">
           <div class="skeleton-title" />
           <div class="skeleton-shows">
-            <div v-for="(__, cardIndex) in skeletonCards" :key="cardIndex" class="skeleton-card" />
+            <div v-for="cardIndex in SKELETON_CARD_COUNT" :key="cardIndex" class="skeleton-card" />
           </div>
+        </div>
+      </div>
+    </template>
+
+    <template v-else-if="isEmpty">
+      <div class="container empty-state">
+        <div class="empty-card" role="status">
+          <div class="empty-icon">📺</div>
+          <h2 class="empty-title">No shows available right now</h2>
+          <p class="empty-message">Please try again in a moment or refresh the page.</p>
+          <button class="retry-button" @click="refresh">Refresh</button>
         </div>
       </div>
     </template>
@@ -46,24 +56,8 @@
 </template>
 
 <script setup>
-const SKELETON_SECTION_COUNT = 4
-const SKELETON_CARD_COUNT = 10
-const INITIAL_EAGER_LOAD_COUNT = 4
-
-const skeletonSections = computed(() => Array.from({ length: SKELETON_SECTION_COUNT }))
-const skeletonCards = computed(() => Array.from({ length: SKELETON_CARD_COUNT }))
-
 const { genres, error, pending, refresh } = useShows()
-
-const viewState = computed(() => {
-  if (error.value) return 'error'
-  if (pending.value) return 'loading'
-  return 'ready'
-})
-
-const isError = computed(() => viewState.value === 'error')
-const isLoading = computed(() => viewState.value === 'loading')
-const isReady = computed(() => viewState.value === 'ready')
+const { isError, isLoading, isEmpty, isReady } = useHomeViewState({ error, pending, genres })
 
 useSeoMeta({
   title: 'TV Shows Dashboard',
@@ -136,12 +130,15 @@ useSeoMeta({
   background: var(--color-accent-hover);
 }
 
-/* Loading State */
 .loading-state {
   padding: 40px 0;
 }
 
 .skeleton-section {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   margin-bottom: 56px;
 }
 
@@ -156,8 +153,11 @@ useSeoMeta({
 
 .skeleton-shows {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: var(--card-width);
   gap: 16px;
+  overflow: hidden;
+  padding: 8px 0;
 }
 
 .skeleton-card {
@@ -165,6 +165,41 @@ useSeoMeta({
   background: var(--color-bg-white-subtle);
   border-radius: 8px;
   animation: pulse 1.5s ease-in-out infinite;
+}
+
+.empty-state {
+  padding: 60px 20px 80px;
+}
+
+.empty-card {
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 40px 32px;
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+}
+
+.empty-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+.empty-title {
+  margin: 0 0 12px 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.empty-message {
+  margin: 0 0 24px 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-muted);
 }
 
 @keyframes pulse {
@@ -200,7 +235,7 @@ useSeoMeta({
   }
 
   .skeleton-shows {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-auto-columns: minmax(70%, 1fr);
     gap: 12px;
   }
 }
