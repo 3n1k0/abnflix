@@ -1,6 +1,9 @@
 <template>
   <div class="detail-card__cast">
-    <template v-if="castToRender.length">
+    <template v-if="loading">
+      <p class="detail-card__text">Loading cast...</p>
+    </template>
+    <template v-else-if="castToRender.length">
       <ul class="detail-card__cast-grid">
         <li v-for="member in visible" :key="member.id" class="detail-card__cast-row">
           <div class="detail-card__cast-avatar">
@@ -41,6 +44,10 @@ const props = defineProps({
     type: Array,
     required: false,
     default: () => [],
+  },
+  loading: {
+    type: Boolean,
+    default: false,
   },
 })
 

@@ -36,7 +36,9 @@
             :genres="detailGenres"
             :cast="cast || []"
             :cast-count="castCount"
+            :cast-pending="castPending"
             :episode-count="episodeCount"
+            @load-cast="loadCast"
           />
         </template>
 
@@ -56,8 +58,17 @@
 const route = useRoute()
 const slugParam = computed(() => String(route.params.slug))
 
-const { show, isLoading, summaryText, detailGenres, cast, castCount, episodeCount } =
-  useShowDetail(slugParam)
+const {
+  show,
+  isLoading,
+  summaryText,
+  detailGenres,
+  cast,
+  castCount,
+  castPending,
+  episodeCount,
+  loadCast,
+} = useShowDetail(slugParam)
 const posterError = ref(false)
 const shouldShowPoster = computed(() => !posterError.value)
 

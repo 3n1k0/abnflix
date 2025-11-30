@@ -36,7 +36,7 @@ describe('ShowList', () => {
     const wrapper = mount(ShowList, mountOptions)
 
     expect(wrapper.get('.show-list__title').text()).toBe('Drama')
-    expect(wrapper.get('.show-list__action').text()).toBe('View All')
+    expect(wrapper.get('.show-list__view-all-button').text()).toContain('View All')
 
     const cards = wrapper.findAllComponents(ShowCard)
     expect(cards.length).toBe(shows.length)
@@ -45,7 +45,7 @@ describe('ShowList', () => {
   it('emits a view-all event when the action is clicked', async () => {
     const wrapper = mount(ShowList, mountOptions)
 
-    await wrapper.get('.show-list__action').trigger('click')
+    await wrapper.get('.show-list__view-all-button').trigger('click')
     expect(wrapper.emitted('view-all')).toBeTruthy()
   })
 
@@ -60,7 +60,7 @@ describe('ShowList', () => {
     })
 
     expect(wrapper.get('.show-list__title').text()).toBe('Comedy')
-    expect(wrapper.get('.show-list__action').text()).toBe('See more')
+    expect(wrapper.get('.show-list__view-all-button').text()).toContain('See more')
 
     const cards = wrapper.findAllComponents(ShowCard)
     expect(cards).toHaveLength(2)

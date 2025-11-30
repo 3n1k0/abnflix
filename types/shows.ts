@@ -38,13 +38,3 @@ export interface TvMazeShow {
     original?: string | null
   } | null
 }
-
-export interface GenreBucket {
-  name: string
-  shows: ShowItem[]
-}
-
-export interface ShowsResponse {
-  genres: GenreBucket[]
-  totalGenres: number
-}

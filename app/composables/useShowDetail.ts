@@ -31,11 +31,27 @@ export function useShowDetail(slugParam: Ref<string>) {
 
   const showId = computed(() => show.value?.id)
 
-  const { data: cast } = useAsyncData(
+  const {
+    data: cast,
+    pending: castPending,
+    execute: fetchCast,
+  } = useLazyAsyncData(
     () => `cast-${showId.value}`,
-    () => (showId.value ? $fetch(`/api/shows/${showId.value}/cast`) : Promise.resolve(null)),
-    { watch: [showId], default: () => null }
+    () => {
+      if (!showId.value) return Promise.resolve(null)
+      return $fetch(`/api/shows/${showId.value}/cast`)
+    },
+    {
+      default: () => null,
+      immediate: false,
+    }
   )
+
+  const loadCast = () => {
+    if (!cast.value && showId.value) {
+      fetchCast()
+    }
+  }
 
   const castCount = computed(() => (cast.value == null ? null : cast.value.length))
   const detailGenres = computed(() => show.value?.genres || [])
@@ -49,6 +65,8 @@ export function useShowDetail(slugParam: Ref<string>) {
     detailGenres,
     cast,
     castCount,
+    castPending,
     episodeCount,
+    loadCast,
   }
 }

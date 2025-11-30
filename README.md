@@ -10,11 +10,14 @@ Shows are grouped by genre, sorted by rating, searchable by name, and each show 
 The goal of the project is to demonstrate clean architecture, reusable composables, good frontend patterns, and a mobile-friendly, accessible UI.
 
 ## Screenshots
+
 ### **Home Page - desktop**
+
 <div>
 <img width="1353" height="888" alt="Screenshot 2025-11-30 at 20 00 48" src="https://github.com/user-attachments/assets/6c3c2d73-bb9e-442b-b798-7d15c136cab4" />
 
 ### **Home Page - mobile**
+
 <img width="411" height="891" alt="Screenshot 2025-11-30 at 20 01 54" src="https://github.com/user-attachments/assets/33f8d982-f573-4d06-b4b5-fb58e71d8ef7" />
 </div>
 
