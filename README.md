@@ -1,9 +1,22 @@
 # TV Shows Dashboard
 
+<p align="center">
+  <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmU1ZmhsbHgwNWt0ZWZjcnV3YWJtNm9oOGtlc2Zya3d5OThwM3JpcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/13ZVRnWnmSMaRy/giphy.gif" width="420" />
+</p>
+
 A Nuxt 4 / Vue 3 application for browsing and searching TV shows using the TVMaze API.
 Shows are grouped by genre, sorted by rating, searchable by name, and each show has a detail page with cast information.
 
 The goal of the project is to demonstrate clean architecture, reusable composables, good frontend patterns, and a mobile-friendly, accessible UI.
+
+## Screenshots
+### **Home Page - desktop**
+<div>
+<img width="1353" height="888" alt="Screenshot 2025-11-30 at 20 00 48" src="https://github.com/user-attachments/assets/6c3c2d73-bb9e-442b-b798-7d15c136cab4" />
+
+### **Home Page - mobile**
+<img width="411" height="891" alt="Screenshot 2025-11-30 at 20 01 54" src="https://github.com/user-attachments/assets/33f8d982-f573-4d06-b4b5-fb58e71d8ef7" />
+</div>
 
 ## Tech Stack & Architecture
 
