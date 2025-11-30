@@ -1,22 +1,89 @@
 # TV Shows Dashboard
 
-Nuxt 4 / Vue 3 single-page app that browses TVMaze shows by genre, highlights the highest-rated titles per genre, provides search, and shows detail pages with cast.
+A Nuxt 4 / Vue 3 application for browsing and searching TV shows using the TVMaze API.
+Shows are grouped by genre, sorted by rating, searchable by name, and each show has a detail page with cast information.
 
-## Stack & Architecture
+The goal of the project is to demonstrate clean architecture, reusable composables, good frontend patterns, and a mobile-friendly, accessible UI.
 
-- **Framework**: Nuxt 4 (Vue 3, Vite) for file-based routing, SSR/ISR caching, and composables.
-- **Styling**: Hand-rolled CSS with design tokens, minimal dependencies.
-- **Data**: Server endpoints in `server/api` wrap the public TVMaze API. Shows are fetched server-side, bucketed by genre, sorted by rating, and cached.
-- **Images**: `@nuxt/image` for responsive posters/placeholders.
-- **Tests**: Vitest + Vue Test Utils covering core components/pages.
+## Tech Stack & Architecture
 
-## Requirements Coverage
+### **Framework**
 
-- **Genres + ratings**: `/api/shows` aggregates all TVMaze pages and returns top-rated shows per genre (sorted then trimmed).
-- **Detail view**: `/shows/[slug]` fetches show detail and cast via API routes.
-- **Search**: `/search` uses debounced queries against `/api/search`.
-- **Responsiveness**: Layouts adapt down to mobile, horizontal scroll lists use scroll buttons.
-- **Clean code**: Components are small, props-driven, composables encapsulate data fetching and UI logic.
+- **Nuxt 4 (Vue 3 + Vite)**  
+  Chosen for:
+  - File-based routing
+  - First-class server routes (Nitro)
+  - Built-in SSR and caching
+  - Clean composable architecture
+
+### **Styling**
+
+- Hand-written CSS with design tokens
+- Minimal dependencies
+- Responsive layout down to mobile
+
+### **Data Layer**
+
+Server routes under `server/api` wrap TVMaze endpoints:
+
+- Aggregation logic (genre bucketing)
+- Fallback search strategies
+- Normalization (via `transformShow`)
+- Caching with `cachedEventHandler`
+
+### **Images**
+
+- Nuxt Image module for responsive poster rendering
+
+### **State & Logic**
+
+- Composables for:
+  - URL/query syncing
+  - Search view state
+  - Debounced search input
+  - Show detail fetching
+  - Horizontal scroll behavior
+
+### **Testing**
+
+- Vitest + Vue Test Utils
+- Tests for base components and key logic
+
+## ✔ Requirements Coverage
+
+### **Genres + Ratings**
+
+- `/api/shows` scans the TVMaze show index
+- Groups shows by genre
+- Sorts by rating
+- Returns only the top shows per genre
+
+### **Detail View**
+
+- `/shows/[slug]` fetches:
+  - show detail
+  - cast list
+- Includes graceful fallbacks and image error handling
+
+### **Search**
+
+- Debounced client-side search input
+- Queries Nuxt API via `/api/search`
+- Loading, empty, and error states
+- URL-sync enabled (`?q=`)
+
+### **Responsive UI**
+
+- Horizontal lists with scroll buttons
+- Fully mobile-friendly layout
+- Skeleton placeholders for loading
+
+### **Clean Code**
+
+- Small components
+- Typed server routes
+- Encapsulated logic in composables
+- Clear data flow
 
 ## Getting Started
 

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import HeroSearch from '@/components/HeroSearch.vue'
 import HeroSection from '@/components/HeroSection.vue'
 
@@ -10,7 +10,12 @@ vi.mock('nuxt/app', () => ({
 }))
 
 beforeEach(() => {
+  vi.useFakeTimers()
   pushMock.mockReset()
+})
+
+afterEach(() => {
+  vi.restoreAllMocks()
 })
 
 describe('HeroSection', () => {
@@ -43,6 +48,7 @@ describe('HeroSection', () => {
 
     const input = wrapper.get('input[type="search"]')
     await input.setValue('Severance')
+    await vi.advanceTimersByTimeAsync(500) // Wait for debounce
     await wrapper.get('form').trigger('submit.prevent')
 
     expect(pushMock).toHaveBeenCalledWith({ path: '/search', query: { q: 'Severance' } })
