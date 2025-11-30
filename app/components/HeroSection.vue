@@ -56,7 +56,7 @@ const handleSubmit = () => {
 
 @media (max-width: 640px) {
   .hero-inner {
-    padding: 56px 0 64px;
+    padding: 56px 24px 64px;
   }
 
   .hero-copy {

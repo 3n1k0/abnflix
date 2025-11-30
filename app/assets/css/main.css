@@ -129,6 +129,12 @@ body {
   padding: 0 var(--layout-gap);
 }
 
+@media (max-width: 640px) {
+  .genre-section.container {
+    padding: 0;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -168,8 +174,4 @@ body {
   box-shadow: var(--shadow-input-focus);
 }
 
-@media (max-width: 640px) {
-  .container {
-    padding: 0 16px;
-  }
-}
+

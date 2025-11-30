@@ -2,9 +2,6 @@
   <section class="show-list">
     <header class="show-list__header">
       <h2 class="show-list__title">{{ title }}</h2>
-      <button type="button" class="show-list__action" @click="emit('view-all')">
-        {{ actionLabel }}
-      </button>
     </header>
 
     <div class="show-list__body">
@@ -36,6 +33,12 @@
             :eager-load="index < eagerLoadCount"
             :fetch-priority="index === 0 ? 'high' : 'auto'"
           />
+        </li>
+        <li class="show-list__card show-list__view-all-card">
+          <button type="button" class="show-list__view-all-button" @click="emit('view-all')">
+            <span class="show-list__view-all-text">{{ actionLabel }}</span>
+            <ChevronRightIcon />
+          </button>
         </li>
       </ul>
 
@@ -105,8 +108,6 @@ const { canScrollPrev, canScrollNext, scrollPrev, scrollNext } = useHorizontalSc
 .show-list__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
 }
 
 .show-list__title {
@@ -114,24 +115,52 @@ const { canScrollPrev, canScrollNext, scrollPrev, scrollNext } = useHorizontalSc
   font-size: var(--text-base);
   line-height: 1.5;
   letter-spacing: var(--tracking-base);
-  font-weight: 400;
+  font-weight: 600;
   color: var(--color-ink);
+  text-transform: capitalize;
+  padding-left: calc(var(--scroll-button-size) + 12px);
 }
 
-.show-list__action {
-  border: none;
-  background: none;
-  padding: 0;
-  color: var(--color-primary);
-  font-size: var(--text-sm);
-  line-height: 1.43;
-  letter-spacing: var(--tracking-tight);
+.show-list__view-all-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.show-list__view-all-button {
+  width: 100%;
+  height: 100%;
+  border: 2px dashed var(--color-border-soft);
+  background: var(--gradient-card);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 16px;
 }
 
-.show-list__action:hover,
-.show-list__action:focus-visible {
-  text-decoration: underline;
+.show-list__view-all-button:hover,
+.show-list__view-all-button:focus-visible {
+  border-color: var(--color-primary);
+  background: var(--gradient-card-hover);
+  transform: translateY(-2px);
+}
+
+.show-list__view-all-text {
+  color: var(--color-primary);
+  font-size: var(--text-base);
+  font-weight: 500;
+  text-align: center;
+}
+
+.show-list__view-all-button svg {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  color: var(--color-primary);
 }
 
 .show-list__grid {
@@ -183,6 +212,10 @@ const { canScrollPrev, canScrollNext, scrollPrev, scrollNext } = useHorizontalSc
 }
 
 @media (max-width: 640px) {
+  .show-list__title {
+    padding-left: calc(var(--scroll-button-size-mobile) + 12px);
+  }
+
   .show-list__grid {
     grid-auto-columns: minmax(70%, 1fr);
     padding: 8px 0;

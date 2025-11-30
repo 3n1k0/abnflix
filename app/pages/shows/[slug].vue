@@ -160,7 +160,7 @@ useSeoMeta({
 
 @media (max-width: 768px) {
   .show-detail {
-    padding: 24px 0 40px;
+    padding: 24px 24px 40px;
   }
 
   .show-detail__content {
@@ -178,8 +178,12 @@ useSeoMeta({
     justify-items: center;
   }
 
-  .show-detail__panel {
+  .show-detail__poster {
     width: 100%;
+    max-width: 400px;
+  }
+
+  .show-detail__panel {
     max-width: 400px;
     margin: 0 auto;
   }

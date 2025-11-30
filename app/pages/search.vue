@@ -205,6 +205,8 @@ useSeoMeta({
 @media (max-width: 640px) {
   .search-page {
     gap: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
   .search-hero__inner {
