@@ -9,7 +9,7 @@ const mockResults = ref([
 ])
 const mockPending = ref(false)
 const mockError = ref(null)
-const routeMock = ref({ query: {} as Record<string, string> })
+const routeMock = ref({ path: '/search', query: {} as Record<string, string> })
 const replaceMock = vi.fn()
 
 vi.mock('nuxt/app', async () => {
@@ -44,7 +44,7 @@ const showCardStub = {
 }
 
 const mountSearchPage = (routeQuery = {}) => {
-  routeMock.value = { query: routeQuery }
+  routeMock.value = { path: '/search', query: routeQuery }
 
   const wrapper = mount(SearchPage, {
     global: {
@@ -74,7 +74,7 @@ describe('SearchPage', () => {
     mockPending.value = false
     mockError.value = null
     replaceMock.mockReset()
-    routeMock.value = { query: {} }
+    routeMock.value = { path: '/search', query: {} }
   })
 
   it('renders search results when available', () => {

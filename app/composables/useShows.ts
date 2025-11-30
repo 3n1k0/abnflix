@@ -8,10 +8,7 @@ export function useShows() {
     pending,
     error,
     refresh,
-  } = useAsyncData<ShowsResponse>(
-    'shows-v4',
-    () => $fetch('/api/shows?v=4')
-  )
+  } = useAsyncData<ShowsResponse>('shows-v4', () => $fetch('/api/shows?v=4'))
 
   const genres = computed(() => rawShows.value?.genres || [])
   const totalGenres = computed(() => rawShows.value?.totalGenres || 0)

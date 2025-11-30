@@ -48,5 +48,11 @@ export default cachedEventHandler(
 
     throw createError({ statusCode: 404, statusMessage: 'Show not found' })
   },
-  { maxAge: 60 * 60 }
+  {
+    maxAge: 60 * 60,
+    getKey: (event) => {
+      const id = getRouterParam(event, 'id') || ''
+      return `show:${id}`
+    },
+  }
 )

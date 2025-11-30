@@ -1,4 +1,4 @@
-import { mount, type MountingOptions, type VueWrapper } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import HeroSearch from '@/components/HeroSearch.vue'
 import HeroSection from '@/components/HeroSection.vue'
@@ -12,21 +12,6 @@ vi.mock('nuxt/app', () => ({
 beforeEach(() => {
   pushMock.mockReset()
 })
-
-const mountHero = (options: MountingOptions<typeof HeroSection> = {}): VueWrapper =>
-  mount(HeroSection, {
-    ...options,
-    global: {
-      ...options.global,
-      mocks: {
-        ...options.global?.mocks,
-      },
-      stubs: {
-        SearchIcon: true,
-        ...options.global?.stubs,
-      },
-    },
-  })
 
 describe('HeroSection', () => {
   it('renders the headline and supporting copy', () => {
@@ -63,3 +48,6 @@ describe('HeroSection', () => {
     expect(pushMock).toHaveBeenCalledWith({ path: '/search', query: { q: 'Severance' } })
   })
 })
+function mountHero(options?: Parameters<typeof mount<typeof HeroSection>>[1]) {
+  return mount(HeroSection, options)
+}

@@ -34,5 +34,8 @@ export default cachedEventHandler(
       })
     }
   },
-  { maxAge: 15 * 60 }
+  {
+    maxAge: 15 * 60,
+    getKey: (event) => `search:${getQuery(event).q}`,
+  }
 )

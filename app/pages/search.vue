@@ -66,9 +66,7 @@ const route = useRoute()
 const router = useRouter()
 
 const { searchInput } = useUrlSearchSync({ router, route })
-
 const { trimmedQuery, results, error, pending } = useShowSearch(searchInput)
-
 const { searchState, hintMessage, stateMessage } = useSearchViewState({
   trimmedQuery,
   results,

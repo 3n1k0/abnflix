@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import HeroSearch from '@/components/HeroSearch.vue'
 
 const mountSearch = (props?: Record<string, unknown>) =>
@@ -13,6 +13,14 @@ const mountSearch = (props?: Record<string, unknown>) =>
   })
 
 describe('HeroSearch', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it('renders the search form with accessibility attributes', () => {
     const wrapper = mountSearch()
 
@@ -36,6 +44,8 @@ describe('HeroSearch', () => {
 
     const input = wrapper.get('input[type="search"]')
     await input.setValue('New Query')
+
+    await vi.advanceTimersByTimeAsync(500)
 
     expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['New Query'])
 

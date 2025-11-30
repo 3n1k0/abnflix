@@ -4,19 +4,18 @@
       <BackButton />
 
       <div class="show-detail__content">
-        <!-- Loading state -->
         <template v-if="isLoading">
           <div class="show-detail__poster skeleton skeleton--poster" aria-hidden="true" />
           <div class="show-detail__panel skeleton skeleton--panel" aria-hidden="true" />
         </template>
         <template v-else-if="show">
           <div class="show-detail__poster">
-            <div v-show="posterError" class="poster-error">
+            <div v-show="!shouldShowPoster" class="poster-error">
               <div class="poster-error__icon">📺</div>
               <div class="poster-error__text">Image unavailable</div>
             </div>
             <NuxtImg
-              v-show="!posterError"
+              v-show="shouldShowPoster"
               class="show-detail__image"
               :src="show.imageFullSrc || show.imageSrc"
               :alt="show.alt || `${show.title} poster`"
@@ -41,7 +40,6 @@
           />
         </template>
 
-        <!-- Not found -->
         <template v-else>
           <div class="show-detail__not-found">
             <h1>Show Not Found</h1>
@@ -61,6 +59,8 @@ const slugParam = computed(() => String(route.params.slug))
 const { show, isLoading, summaryText, detailGenres, cast, castCount, episodeCount } =
   useShowDetail(slugParam)
 const posterError = ref(false)
+const shouldShowPoster = computed(() => !posterError.value)
+
 const handlePosterErrorWithLog = () => {
   console.warn(`Failed to load poster image for show: ${show.value?.title || 'Unknown'}`)
   posterError.value = true

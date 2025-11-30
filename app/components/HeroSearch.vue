@@ -14,6 +14,7 @@
       id="hero-search-input"
       ref="inputRef"
       v-model="localValue"
+      name="query"
       type="search"
       placeholder="Search for shows..."
       autocomplete="off"
@@ -23,9 +24,7 @@
   </form>
 </template>
 
-<script setup lang="ts">
-import { ref, watch, onUnmounted } from 'vue'
-
+<script setup>
 const DEBOUNCE_MS = 400
 
 const props = defineProps({
@@ -38,9 +37,9 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'submit'])
 
 const localValue = ref(props.modelValue || '')
-const inputRef = ref<HTMLInputElement | null>(null)
+const inputRef = ref(null)
 
-let timer: ReturnType<typeof setTimeout> | null = null
+let timer = null
 
 watch(
   () => props.modelValue,

@@ -1,4 +1,3 @@
-import { isRef, type Ref } from 'vue'
 import type { ShowItem } from '../../types/shows'
 
 const MIN_QUERY_LENGTH = 2
@@ -22,7 +21,7 @@ export function useShowSearch(initialQuery: string | Ref<string> = '') {
     },
     {
       default: () => [],
-      server: false,
+      server: true,
       lazy: true,
       watch: [trimmed],
     }
