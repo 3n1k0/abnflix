@@ -40,18 +40,17 @@
 
 <script setup>
 const props = defineProps({
-  cast: {
-    type: Array,
-    required: false,
-    default: () => [],
-  },
-  loading: {
-    type: Boolean,
-    default: false,
+  showId: {
+    type: [Number, String],
+    required: true,
   },
 })
 
-const castToRender = computed(() => props.cast || [])
+const { data: cast, pending: loading } = useLazyFetch(`/api/shows/${props.showId}/cast`, {
+  key: `show-cast-${props.showId}`,
+})
+
+const castToRender = computed(() => cast.value || [])
 
 const { visible, hasMore, showAll, errors, onImageError } = useCastList(castToRender)
 </script>

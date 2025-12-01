@@ -2,7 +2,10 @@ export function useShowDetail(slugParam: Ref<string>) {
   const { allShows, pending: listPending } = useShows()
 
   const cachedShow = computed(() =>
-    allShows.value.find((s) => s.slug === slugParam.value || String(s.id) === slugParam.value)
+    allShows.value.find(
+      (s: { slug: string; id: unknown }) =>
+        s.slug === slugParam.value || String(s.id) === slugParam.value
+    )
   )
 
   const shouldFetch = computed(() => !cachedShow.value && Boolean(slugParam.value))
@@ -29,44 +32,17 @@ export function useShowDetail(slugParam: Ref<string>) {
 
   const isLoading = computed(() => (listPending.value || fetching.value) && !show.value)
 
-  const showId = computed(() => show.value?.id)
-
-  const {
-    data: cast,
-    pending: castPending,
-    execute: fetchCast,
-  } = useLazyAsyncData(
-    () => `cast-${showId.value}`,
-    () => {
-      if (!showId.value) return Promise.resolve(null)
-      return $fetch(`/api/shows/${showId.value}/cast`)
-    },
-    {
-      default: () => null,
-      immediate: false,
-    }
-  )
-
-  const loadCast = () => {
-    if (!cast.value && showId.value) {
-      fetchCast()
-    }
-  }
-
-  const castCount = computed(() => (cast.value == null ? null : cast.value.length))
+  const castCount = computed(() => null)
   const detailGenres = computed(() => show.value?.genres || [])
   const summaryText = computed(() => show.value?.summary || '')
-  const episodeCount = computed(() => 5)
+  const episodeCount = computed(() => null)
 
   return {
     show,
     isLoading,
     summaryText,
     detailGenres,
-    cast,
     castCount,
-    castPending,
     episodeCount,
-    loadCast,
   }
 }

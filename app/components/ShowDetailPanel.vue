@@ -12,11 +12,7 @@
 
     <div class="detail-card__body">
       <ShowDetailSummary v-if="activeTab === 'summary'" :text="summaryText" />
-      <ShowDetailCast
-        v-else-if="activeTab === 'cast'"
-        :cast="castToRender"
-        :loading="castPending"
-      />
+      <ShowDetailCast v-else-if="activeTab === 'cast'" :show-id="show?.id" />
       <ShowDetailEpisodes v-else />
     </div>
   </ShowDetailCard>
@@ -36,25 +32,15 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
-  cast: {
-    type: Array,
-    default: () => [],
-  },
   castCount: {
     type: Number,
     default: null,
-  },
-  castPending: {
-    type: Boolean,
-    default: false,
   },
   episodeCount: {
     type: Number,
     default: null,
   },
 })
-
-const emit = defineEmits(['load-cast'])
 
 const title = computed(() => props.show?.title || 'Untitled')
 const year = computed(() => props.show?.year ?? '')
@@ -68,17 +54,10 @@ const summaryText = computed(() => {
 })
 
 const genresToRender = computed(() => props.genres || [])
-const castToRender = computed(() => props.cast || [])
 
 const { active: activeTab, tabs } = useDetailTabs({
   castCount: toRef(props, 'castCount'),
   episodeCount: toRef(props, 'episodeCount'),
-})
-
-watch(activeTab, (newTab) => {
-  if (newTab === 'cast') {
-    emit('load-cast')
-  }
 })
 </script>
 

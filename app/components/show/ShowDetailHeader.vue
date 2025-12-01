@@ -4,7 +4,7 @@
       <h1 id="detail-card-title" class="detail-card__title">{{ title }}</h1>
       <ul class="detail-card__meta" aria-label="Show details">
         <li class="detail-card__pill detail-card__pill--rating">
-          <StarIcon class="pill-icon" aria-hidden="true" />
+          <StarIcon class="pill-icon" />
           <span class="pill-value">{{ displayRating }}</span>
         </li>
         <li v-if="year" class="detail-card__meta-text">{{ year }}</li>
