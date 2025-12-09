@@ -17,7 +17,7 @@ export function useShowSearch(initialQuery: string | Ref<string> = '') {
     () => `show-search-${trimmed.value}`,
     async () => {
       if (!hasQuery.value) return []
-      return $fetch(`/api/search?q=${encodeURIComponent(trimmed.value)}`)
+      return $fetch<ShowItem[]>(`/api/search?q=${encodeURIComponent(trimmed.value)}`)
     },
     {
       default: () => [],

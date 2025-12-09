@@ -27,13 +27,13 @@ export default cachedEventHandler(async () => {
   }
 
   const selected = Object.keys(buckets)
-    .sort((a, b) => buckets[b].length - buckets[a].length)
+    .sort((a, b) => (buckets[b]?.length || 0) - (buckets[a]?.length || 0))
     .slice(0, MAX_GENRES)
 
   return {
     genres: selected.map((name) => ({
       name,
-      shows: sortShowsByRating(buckets[name]).slice(0, SHOWS_PER_GENRE),
+      shows: sortShowsByRating(buckets[name] || []).slice(0, SHOWS_PER_GENRE),
     })),
   }
 })

@@ -1,11 +1,10 @@
+import type { ShowItem } from '../../types/shows'
+
 export function useShowDetail(slugParam: Ref<string>) {
   const { allShows, pending: listPending } = useShows()
 
   const cachedShow = computed(() =>
-    allShows.value.find(
-      (s: { slug: string; id: unknown }) =>
-        s.slug === slugParam.value || String(s.id) === slugParam.value
-    )
+    allShows.value.find((s) => s.slug === slugParam.value || String(s.id) === slugParam.value)
   )
 
   const shouldFetch = computed(() => !cachedShow.value && Boolean(slugParam.value))
@@ -28,7 +27,7 @@ export function useShowDetail(slugParam: Ref<string>) {
     }
   )
 
-  const show = computed(() => cachedShow.value || fetchedShow.value)
+  const show = computed(() => (fetchedShow.value || cachedShow.value) as ShowItem | null)
 
   const isLoading = computed(() => (listPending.value || fetching.value) && !show.value)
 

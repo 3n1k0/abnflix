@@ -38,3 +38,10 @@ export interface TvMazeShow {
     original?: string | null
   } | null
 }
+
+export interface ShowsResponse {
+  genres: Array<{
+    name: string
+    shows: Array<Pick<ShowItem, 'id' | 'slug' | 'title' | 'year' | 'rating' | 'imageSrc'>>
+  }>
+}

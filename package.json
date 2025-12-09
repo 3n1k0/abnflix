@@ -12,12 +12,15 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "typecheck": "npx nuxt typecheck"
   },
   "dependencies": {
     "nuxt": "^4.2.1",
+    "typescript": "^5.9.3",
     "vue": "^3.5.25",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "vue-tsc": "^3.1.8"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.11.0",

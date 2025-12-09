@@ -103,7 +103,7 @@ describe('sortShowsByRating', () => {
 
   it('handles shows with undefined titles in secondary sort', () => {
     const shows: ShowItem[] = [
-      { id: 1, title: undefined, rating: 8.0, slug: 'show-a' },
+      { id: 1, title: undefined as any, rating: 8.0, slug: 'show-a' },
       { id: 2, title: 'Show B', rating: 8.0, slug: 'show-b' },
     ]
 
