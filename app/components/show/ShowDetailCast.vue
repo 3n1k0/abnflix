@@ -5,7 +5,7 @@
     </template>
     <template v-else-if="castToRender.length">
       <ul class="detail-card__cast-grid">
-        <li v-for="member in visible" :key="member.id" class="detail-card__cast-row">
+        <li v-for="member in visibleCastMembers" :key="member.id" class="detail-card__cast-row">
           <div class="detail-card__cast-avatar">
             <NuxtImg
               v-if="member.image && !errors[member.id]"
@@ -29,9 +29,9 @@
         v-if="hasMore"
         type="button"
         class="detail-card__cast-toggle"
-        @click="showAll = !showAll"
+        @click="isShowAllOpen = !isShowAllOpen"
       >
-        {{ showAll ? 'Show less' : 'See more' }}
+        {{ isShowAllOpen ? 'Show less' : 'See more' }}
       </button>
     </template>
     <p v-else class="detail-card__text">Cast data not available for this show.</p>
@@ -52,7 +52,14 @@ const { data: cast, pending: loading } = useLazyFetch(`/api/shows/${props.showId
 
 const castToRender = computed(() => cast.value || [])
 
-const { visible, hasMore, showAll, errors, onImageError } = useCastList(castToRender)
+const { visibleCastMembers, hasMore, isShowAllOpen } = useCastList(castToRender)
+
+const errors = reactive({})
+
+const onImageError = (rawId) => {
+  const id = Number(rawId)
+  errors[id] = true
+}
 </script>
 
 <style scoped>
