@@ -1,67 +1,74 @@
 import type { Ref } from 'vue'
 
-export function useHorizontalScroller(
-  gridRef: Ref<HTMLElement | null>,
-  items: Ref<unknown[]>,
-  selector = '.show-list__card'
-) {
+/**
+ * Composable for managing horizontal scrolling with navigation controls.
+ * Provides scroll state tracking and smooth scrolling functionality based on item width.
+ *
+ * @param scrollerRef - Reactive reference to the scrollable container element
+ * @param itemSelector - CSS selector for individual items to calculate scroll amount
+ * @returns Object containing scroll state and control functions
+ * @returns canScrollPrev - Reactive boolean indicating if scrolling left is possible
+ * @returns canScrollNext - Reactive boolean indicating if scrolling right is possible
+ * @returns scrollNext - Function to scroll forward by one item width
+ * @returns scrollPrev - Function to scroll backward by one item width
+ * @returns updateScrollState - Function to manually update scroll state
+ *
+ * @example
+ * ```ts
+ * const scrollerRef = ref<HTMLElement>(null!)
+ * const { canScrollPrev, canScrollNext, scrollNext, scrollPrev } = useHorizontalScroller(
+ *   scrollerRef,
+ *   '.show-list__card'
+ * )
+ * ```
+ */
+export function useHorizontalScroller(scrollerRef: Ref<HTMLElement>, itemSelector: string) {
   const canScrollPrev = ref(false)
   const canScrollNext = ref(false)
 
-  const getEl = () => gridRef.value
-
   const updateScrollState = () => {
-    const el = getEl()
-    if (!el) return
+    const scrollerElement = scrollerRef.value
 
-    const max = el.scrollWidth - el.clientWidth
-    const overflow = el.scrollWidth > el.clientWidth
+    const maxScrollLeft = scrollerElement.scrollWidth - scrollerElement.clientWidth
+    const hasOverflow = scrollerElement.scrollWidth > scrollerElement.clientWidth
 
-    canScrollPrev.value = overflow && el.scrollLeft > 0
-    canScrollNext.value = overflow && el.scrollLeft < max
+    canScrollPrev.value = hasOverflow && scrollerElement.scrollLeft > 0
+    canScrollNext.value = hasOverflow && Math.round(scrollerElement.scrollLeft) < maxScrollLeft
   }
 
   const getScrollAmount = () => {
-    const el = getEl()
-    if (!el) return 0
+    const scrollerElement = scrollerRef.value
 
-    const item = el.querySelector(selector)
-    if (!item) return el.clientWidth * 0.8
+    const firstItem = scrollerElement.querySelector(itemSelector)
+    if (!firstItem) return 0
 
-    const gap = parseFloat(getComputedStyle(el).columnGap || '0')
-    return item.getBoundingClientRect().width + gap
+    const gap = parseFloat(getComputedStyle(scrollerElement).columnGap || '0')
+    return firstItem.getBoundingClientRect().width + gap
   }
 
   const scrollByAmount = (amount: number) => {
-    const el = getEl()
-    if (!el) return
-    el.scrollBy({ left: amount, behavior: 'smooth' })
+    const scrollerElement = scrollerRef.value
+    scrollerElement.scrollBy({ left: amount, behavior: 'smooth' })
   }
 
   const scrollNext = () => scrollByAmount(getScrollAmount())
   const scrollPrev = () => scrollByAmount(-getScrollAmount())
 
-  const onScrollOrResize = () => updateScrollState()
-
   onMounted(() => {
-    const el = getEl()
-    if (!el) return
+    const scrollerElement = scrollerRef.value
 
     updateScrollState()
 
-    el.addEventListener('scroll', onScrollOrResize, { passive: true })
-    window.addEventListener('resize', onScrollOrResize)
+    scrollerElement.addEventListener('scroll', updateScrollState, { passive: true })
+    window.addEventListener('resize', updateScrollState)
   })
 
   onBeforeUnmount(() => {
-    const el = getEl()
-    if (!el) return
+    const scrollerElement = scrollerRef.value
 
-    el.removeEventListener('scroll', onScrollOrResize)
-    window.removeEventListener('resize', onScrollOrResize)
+    scrollerElement.removeEventListener('scroll', updateScrollState)
+    window.removeEventListener('resize', updateScrollState)
   })
-
-  watch(items, () => nextTick(updateScrollState))
 
   return {
     canScrollPrev,

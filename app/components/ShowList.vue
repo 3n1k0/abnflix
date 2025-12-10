@@ -46,6 +46,7 @@
         type="button"
         class="show-list__scroll show-list__scroll--next"
         aria-label="Scroll shows forward"
+        :class="{ 'is-hidden': !canScrollNext }"
         :aria-disabled="!canScrollNext"
         @click="scrollNext"
       >
@@ -87,7 +88,7 @@ const gridRef = ref(null)
 
 const { canScrollPrev, canScrollNext, scrollPrev, scrollNext } = useHorizontalScroller(
   gridRef,
-  normalizedShows
+  '.show-list__card'
 )
 </script>
 
@@ -195,7 +196,8 @@ const { canScrollPrev, canScrollNext, scrollPrev, scrollNext } = useHorizontalSc
   flex-shrink: 0;
 }
 
-.show-list__scroll--prev.is-hidden {
+.show-list__scroll--prev.is-hidden,
+.show-list__scroll--next.is-hidden {
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
