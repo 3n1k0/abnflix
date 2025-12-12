@@ -2,6 +2,14 @@
   <main role="main" class="main-content">
     <HeroSection />
 
+    <div v-if="isReady" class="container genre-filter-section">
+      <GenreSelector
+        :genres="availableGenres"
+        :selected-genre="selectedGenre"
+        @update:selected-genre="setSelectedGenre"
+      />
+    </div>
+
     <template v-if="isError">
       <div class="container error-state">
         <div class="error-card" role="alert">
@@ -39,7 +47,7 @@
 
     <template v-else-if="isReady">
       <section
-        v-for="(genre, index) in genres"
+        v-for="(genre, index) in filteredGenres"
         :key="genre.name"
         class="container genre-section"
         :aria-label="`Genre: ${genre.name}`"
@@ -58,6 +66,8 @@
 <script setup>
 const { genres, error, pending, refresh } = useShows()
 const { isError, isLoading, isEmpty, isReady } = useHomeViewState({ error, pending, genres })
+
+const { selectedGenre, availableGenres, filteredGenres, setSelectedGenre } = useGenreFilter(genres)
 
 const SKELETON_SECTION_COUNT = 4
 const SKELETON_CARD_COUNT = 10
@@ -79,6 +89,10 @@ useSeoMeta({
   flex-direction: column;
   gap: 56px;
   padding-bottom: 80px;
+}
+
+.genre-filter-section {
+  padding-top: 16px;
 }
 
 .genre-section {

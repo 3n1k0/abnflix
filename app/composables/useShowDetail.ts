@@ -1,16 +1,7 @@
 import type { ShowItem } from '../../types/shows'
 
 export function useShowDetail(slugParam: Ref<string>) {
-  const { allShows, pending: listPending } = useShows()
-
-  const cachedShow = computed(() =>
-    allShows.value.find((s) => s.slug === slugParam.value || String(s.id) === slugParam.value)
-  )
-
-  const shouldFetch = computed(() => !cachedShow.value && Boolean(slugParam.value))
-
   const fetchShow = async () => {
-    if (!shouldFetch.value) return null
     try {
       return await $fetch(`/api/shows/${encodeURIComponent(slugParam.value)}`)
     } catch {
@@ -18,7 +9,7 @@ export function useShowDetail(slugParam: Ref<string>) {
     }
   }
 
-  const { data: fetchedShow, pending: fetching } = useAsyncData(
+  const { data: fetchedShow, pending: isPending } = useAsyncData(
     () => `show-detail-${slugParam.value}`,
     fetchShow,
     {
@@ -27,9 +18,9 @@ export function useShowDetail(slugParam: Ref<string>) {
     }
   )
 
-  const show = computed(() => (fetchedShow.value || cachedShow.value) as ShowItem | null)
+  const show = computed(() => fetchedShow.value as ShowItem | null)
 
-  const isLoading = computed(() => (listPending.value || fetching.value) && !show.value)
+  const isLoading = computed(() => isPending.value && !show.value)
 
   const castCount = computed(() => null)
   const detailGenres = computed(() => show.value?.genres || [])
